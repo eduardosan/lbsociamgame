@@ -1,0 +1,78 @@
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/narr/environment.html
+###
+
+[app:main]
+use = egg:lbsociamgame
+
+pyramid.reload_templates = true
+pyramid.debug_authorization = false
+pyramid.debug_notfound = false
+pyramid.debug_routematch = false
+pyramid.default_locale_name = en
+pyramid.includes =
+    pyramid_debugtoolbar
+
+rest_url = http://localhost/api
+
+# By default, the toolbar only appears for clients from IP addresses
+# '127.0.0.1' and '::1'.
+# debugtoolbar.hosts = 127.0.0.1 ::1
+
+# Beaker cache
+cache.regions = default_term, second, short_term, long_term
+cache.type = memory
+cache.second.expire = 1
+cache.short_term.expire = 60
+cache.default_term.expire = 300
+cache.long_term.expire = 3600
+
+# Beaker sessions
+#session.type = file
+#session.data_dir = %(here)s/data/sessions/data
+#session.lock_dir = %(here)s/data/sessions/lock
+session.type = memory
+session.key = akhet_demo
+session.secret = e3d8b0dd1de1cfb48585c4cefca44e15395d3e3b
+
+###
+# wsgi server configuration
+###
+
+[server:main]
+use = egg:waitress#main
+host = 0.0.0.0
+port = 6543
+
+###
+# logging configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/narr/logging.html
+###
+
+[loggers]
+keys = root, lbsociamgame
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = INFO
+handlers = console
+
+[logger_lbsociamgame]
+level = DEBUG
+handlers =
+qualname = lbsociamgame
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = %(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s
