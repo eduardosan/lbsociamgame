@@ -30,6 +30,7 @@
                             <th>Pretty Name</th>
                             <th>Description</th>
                             <th>Date</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,6 +40,12 @@
                             <td>${crime.category_pretty_name}</td>
                             <td>${crime.description}</td>
                             <td>${crime.date}</td>
+                            <td>
+                                <a class="btn btn-default" href="${request.route_url('crimes')}/${crime._metadata.id_doc}/images">
+                                    <i class="glyphicon glyphicon-film"></i>
+                                    Images
+                                </a>
+                            </td>
                         </tr>
 
                     </tbody>

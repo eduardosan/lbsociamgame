@@ -1,0 +1,69 @@
+<metal:main use-macro="load: master.pt">
+
+    <metal:content fill-slot="title">Category registration</metal:content>
+
+    <metal:content fill-slot="content">
+        <div class="row">
+          <div class="col-md-8">
+
+              <ul class="media-list">
+
+                  <li class="media" tal:repeat="image getattr(crime_document, 'image', None)">
+                    <a class="media-left" href="#">
+                      <img src="${rest_url}/file/${image.id_file}/inline" alt="File representing concept">
+                    </a>
+                    <div class="media-body">
+                      <h4 class="media-heading">${image.filename}</h4>
+                      File uploaded in ${crime_document._metadata.dt_doc}
+                    </div>
+                  </li>
+
+              </ul>
+
+            <div id="error-message" class="alert alert-danger" style="display:none">
+              Error uploading file!
+            </div>
+
+            <form class="form-horizontal" role="form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="col-lg-4 control-label">Upload Image:</label>
+                    <div class="col-lg-4">
+                        <input type="file" name="image" id="image-select" multiple>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="button" id="upload" class="btn btn-primary">
+                        <i class="glyphicon glyphicon-upload"></i>
+                        Upload
+                    </button>
+                </div>
+            </form>
+          </div>
+
+        </div>
+    </metal:content>
+
+    <metal:content fill-slot="javascript">
+        <script type="text/javascript">
+            $(function() {
+                $('#upload').click(function(){
+                    var formData = new FormData($('form')[0]);
+                    $.ajax({
+                        type: "POST",
+                        url: "${request.route_url('crimes')}/${crime_document._metadata.id_doc}/images/upload",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(){
+                            location.reload();
+                        },
+                        error: function(){
+                            $('#error-message').show();
+                        }
+                    });
+                });
+            });
+        </script>
+    </metal:content>
+
+</metal:main>

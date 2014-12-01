@@ -16,3 +16,13 @@ class CrimeSchema(Schema):
     category_name = validators.UnicodeString()
     category_pretty_name = validators.UnicodeString()
     description = validators.UnicodeString()
+
+
+class ImageSchema(Schema):
+    """
+    Schema for image upload
+    """
+    allow_extra_fields = True
+    filter_extra_fields = True
+
+    image = validators.FieldStorageUploadConverter()

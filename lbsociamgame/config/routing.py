@@ -22,3 +22,10 @@ def make_routes(cfg):
     cfg.add_route('crimes', 'crime')
     cfg.add_view(crime.CrimeController, attr='crimes', route_name='crimes',
                  renderer='templates/crimes.pt')
+
+    cfg.add_route('images', 'crime/{id_doc}/images')
+    cfg.add_view(crime.CrimeController, attr='images', route_name='images',
+                 renderer='templates/crime_images.pt')
+
+    cfg.add_route('insert_images', 'crime/{id_doc}/images/upload', request_method='POST')
+    cfg.add_view(crime.CrimeController, attr='insert_images', route_name='insert_images')

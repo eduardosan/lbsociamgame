@@ -4,11 +4,16 @@ __author__ = 'eduardo'
 
 import logging
 import datetime
+import requests
+import json
 from pyramid_simpleform import Form
 from pyramid_simpleform.renderers import FormRenderer
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
+from pyramid.response import Response
 from lbsociamgame.model import crime as crime_schema
 from lbsociam.model.crimes import Crimes, CrimesBase
+from liblightbase.lbutils import conv
+from liblightbase.lbtypes import extended
 
 log = logging.getLogger()
 
@@ -23,6 +28,7 @@ class CrimeController(object):
         :param request: Pyramid request
         """
         self.request = request
+        self.crimes_base = CrimesBase()
 
     def crime_add(self):
         """
@@ -56,9 +62,91 @@ class CrimeController(object):
         """
         Crimes list
         """
-        crimes_base = CrimesBase()
-        results = crimes_base.list()
+
+        results = self.crimes_base.list()
 
         return {
             'results': results
         }
+
+    def images(self):
+        """
+        List related images on category
+        """
+        crime_document = self.crimes_base.get_document(self.request.matchdict['id_doc'])
+
+        return {
+            'crime_document': crime_document,
+            'rest_url': self.crimes_base.lbgenerator_rest_url + '/' + self.crimes_base.lbbase._metadata.name
+        }
+
+    def insert_images(self):
+        """
+        Insert image on document
+        :return:
+        """
+        id_doc = self.request.matchdict.get('id_doc')
+        image = self.request.params.get('image')
+        if id_doc is None or image is None:
+            log.error("id_doc and image required")
+            raise HTTPBadRequest
+
+        response = Response(content_type='application/json')
+
+        # Primeiro insere o documento
+        url = self.crimes_base.lbgenerator_rest_url + "/" + self.crimes_base.lbbase._metadata.name + "/file"
+        result = requests.post(
+            url=url,
+            files={
+                'file': image.file.read()
+            }
+        )
+
+        log.info("Status code: %s", result.status_code)
+
+        if result.status_code >= 300:
+            log.error("Erro na insercao!\n%s", result.text)
+            response.status_code = result.status_code
+            response.text = result.text
+            return response
+
+        file_dict = json.loads(result.text)
+        #file_dict['filename'] = image.filename
+        #file_dict['mimetype'] = image.type
+        log.info("UUID para arquivo gerado: %s", file_dict)
+
+        # Primeiro atualiza o documento com lista vazia
+        document = self.crimes_base.get_document(id_doc)
+        #document.images = [image.file.read()]
+        #document.images = [file_dict]
+        document_dict = conv.document2dict(self.crimes_base.lbbase, document)
+        document_dict['images'].append(file_dict)
+
+        if document_dict.get('tokens') is None:
+            document_dict['tokens'] = list()
+
+        #log.debug("11111111111111111111111111111")
+        #log.debug(document_dict)
+
+        crime_obj = Crimes(**document_dict)
+        result = crime_obj.update(id_doc)
+
+        url = self.crimes_base.lbgenerator_rest_url + "/" + self.crimes_base.lbbase._metadata.name + \
+              "/doc/" + id_doc
+
+        log.debug("URL para insercao dos atributos da imagem %s", url)
+
+        #result = requests.put(
+        #    url=url,
+        #    data=document_dict
+        #)
+
+        #if result.status_code >= 300:
+        #    response.status_code = 500
+        #    response.text = result.text
+        #    return response
+
+        response.status_code = 200
+        response.text = result
+
+        return response
