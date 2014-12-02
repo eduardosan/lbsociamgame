@@ -73,7 +73,8 @@ class CrimeController(object):
         """
         List related images on category
         """
-        crime_document = self.crimes_base.get_document(self.request.matchdict['id_doc'])
+        crime_document = json.dumps(self.crimes_base.get_document(self.request.matchdict['id_doc']))
+        log.debug(crime_document)
 
         return {
             'crime_document': crime_document,
@@ -111,42 +112,28 @@ class CrimeController(object):
             return response
 
         file_dict = json.loads(result.text)
-        #file_dict['filename'] = image.filename
-        #file_dict['mimetype'] = image.type
-        log.info("UUID para arquivo gerado: %s", file_dict)
-
-        # Primeiro atualiza o documento com lista vazia
-        document = self.crimes_base.get_document(id_doc)
-        #document.images = [image.file.read()]
-        #document.images = [file_dict]
-        document_dict = conv.document2dict(self.crimes_base.lbbase, document)
-        document_dict['images'].append(file_dict)
-
-        if document_dict.get('tokens') is None:
-            document_dict['tokens'] = list()
-
-        #log.debug("11111111111111111111111111111")
-        #log.debug(document_dict)
-
-        crime_obj = Crimes(**document_dict)
-        result = crime_obj.update(id_doc)
+        file_dict['filename'] = image.filename
+        file_dict['mimetype'] = image.type
+        log.debug("UUID para arquivo gerado: %s", file_dict)
 
         url = self.crimes_base.lbgenerator_rest_url + "/" + self.crimes_base.lbbase._metadata.name + \
-              "/doc/" + id_doc
+              "/doc/" + id_doc + '/images'
 
         log.debug("URL para insercao dos atributos da imagem %s", url)
 
-        #result = requests.put(
-        #    url=url,
-        #    data=document_dict
-        #)
+        result = requests.post(
+            url=url,
+            data={
+                'value': json.dumps(file_dict)
+            }
+        )
 
-        #if result.status_code >= 300:
-        #    response.status_code = 500
-        #    response.text = result.text
-        #    return response
+        if result.status_code >= 300:
+            response.status_code = 500
+            response.text = result.text
+            return response
 
         response.status_code = 200
-        response.text = result
+        response.text = result.json()
 
         return response
