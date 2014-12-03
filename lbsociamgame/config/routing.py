@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'eduardo'
 
-from lbsociamgame.views import crime
+from lbsociamgame.views import crime, status
 
 
 def make_routes(cfg):
@@ -32,3 +32,12 @@ def make_routes(cfg):
 
     cfg.add_route('remove_image', 'crime/{id_doc}/images/{id_file}', request_method='DELETE')
     cfg.add_view(crime.CrimeController, attr='remove_image', route_name='remove_image')
+
+    # Status routes
+    cfg.add_route('status_class', 'status/class/{id_doc}')
+    cfg.add_view(status.StatusController, attr='status_class', route_name='status_class',
+                 renderer='templates/status_class.pt')
+
+    # Status routes
+    cfg.add_route('status_category', 'status/class/{id_doc}/{id_cat}', request_method='POST')
+    cfg.add_view(status.StatusController, attr='status_category', route_name='status_category')

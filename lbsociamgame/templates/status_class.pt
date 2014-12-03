@@ -1,0 +1,85 @@
+<metal:main use-macro="load: master.pt">
+
+    <metal:content fill-slot="title">Status Classification</metal:content>
+
+    <metal:content fill-slot="content">
+
+        <div class="row">
+          <div class="col-md-8">
+            <div id="error-message" class="alert alert-danger" style="display:none">
+              Error in classification!
+            </div>
+
+              <div class="bs-callout bs-callout-info">
+                  <h2>Status oriundo do ${status.origin}</h2>
+                  <p>${status.text}</p>
+
+                  <div class="media" tal:condition="exists: status.source[0]['_user']['_profile_image_url']">
+                    <a class="media-left" href="http://twitter.com/${status.source[0]['_user']['_screen_name']}" target="_blank">
+                      <img src="${status.source[0]['_user']['_profile_image_url']}" alt="Twitter profile">
+                    </a>
+                    <div class="media-body">
+                      <h4 class="media-heading">${status.source[0]['_user']['_name']}</h4>
+                      <a href="http://twitter.com/${status.source[0]['_user']['_screen_name']}/status/${status.source[0]['_id']}" target="_blank">${status.source[0]['_user']['_name']} on ${status.origin} em ${status.source[0]['_created_at']}</a>
+                    </div>
+                  </div>
+
+              </div>
+
+          </div>
+        </div>
+
+        <div class="row">
+
+            <div tal:repeat="crime_document crimes">
+
+                <div tal:condition="exists: crime_document['images']">
+
+                <div class="col-sm-6 col-md-4">
+
+                    <div class="thumbnail">
+                      <img src="${rest_url}/file/${crime_document['images'][0]['id_file']}/download" alt="File representing concept">
+                      <div class="caption">
+                        <p style="text-align: center;">
+                            <a href="#${crime_document['_metadata']['id_doc']}" class="btn btn-default" role="button">
+                                <i class="glyphicon glyphicon-ok"></i>
+                                Remove file
+                            </a>
+                        </p>
+                      </div>
+                    </div>
+
+                </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </metal:content>
+
+    <metal:content fill-slot="javascript">
+        <script type="text/javascript">
+            $(function() {
+
+                $('.btn-default').click(function(){
+                    var id = $(this).attr('href').replace('#', '');
+                    var url = "${request.route_url('status_category')}/${id_doc}/"+id
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: "",
+                        success: function(){
+                            $('#error-message').show();
+                        },
+                        error: function(){
+                            location.reload();
+                        }
+                    });
+                });
+            });
+        </script>
+    </metal:content>
+
+</metal:main>

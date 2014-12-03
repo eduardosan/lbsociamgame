@@ -29,19 +29,21 @@
                             <th>Name</th>
                             <th>Pretty Name</th>
                             <th>Description</th>
+                            <th>Default Token</th>
                             <th>Date</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
 
-                        <tr tal:repeat="crime results.results">
-                            <td>${crime.category_name}</td>
-                            <td>${crime.category_pretty_name}</td>
-                            <td>${crime.description}</td>
-                            <td>${crime.date}</td>
+                        <tr tal:repeat="crime results.get('results')">
+                            <td>${crime.get('category_name')}</td>
+                            <td>${crime.get('category_pretty_name')}</td>
+                            <td>${crime.get('description')}</td>
+                            <td>${crime.get('default_token')}</td>
+                            <td>${crime.get('date')}</td>
                             <td>
-                                <a class="btn btn-default" href="${request.route_url('crimes')}/${crime._metadata.id_doc}/images">
+                                <a class="btn btn-default" href="${request.route_url('crimes')}/${crime['_metadata']['id_doc']}/images">
                                     <i class="glyphicon glyphicon-film"></i>
                                     Images
                                 </a>
