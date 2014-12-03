@@ -6,23 +6,32 @@
         <div class="row">
           <div class="col-md-8">
 
-              <ul class="media-list">
-
-                  <li class="media" tal:repeat="image crime_document.get('images')">
-                    <a class="media-left" href="#">
-                      <img src="${rest_url}/file/${image.id_file}/inline" alt="File representing concept">
-                    </a>
-                    <div class="media-body">
-                      <h4 class="media-heading">${image.filename}</h4>
-                      File uploaded in ${crime_document._metadata.dt_doc}
-                    </div>
-                  </li>
-
-              </ul>
-
             <div id="error-message" class="alert alert-danger" style="display:none">
-              Error uploading file!
+              Error in file operation!
             </div>
+
+              <div class="col-sm-6 col-md-4" tal:repeat="image crime_document.get('images')">
+
+                <div class="thumbnail">
+                  <img src="${rest_url}/file/${image['id_file']}/download" alt="File representing concept">
+                  <div class="caption">
+                    <h3>${image['filename']}</h3>
+                    <p>File uploaded in ${crime_document['_metadata']['dt_doc']}</p>
+                    <p>
+                        <a href="#${image['id_file']}" class="btn btn-danger" role="button">
+                            <i class="glyphicon glyphicon-remove"></i>
+                            Remove file
+                        </a>
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-8">
 
             <form class="form-horizontal" role="form" enctype="multipart/form-data">
                 <div class="form-group">
@@ -46,6 +55,7 @@
     <metal:content fill-slot="javascript">
         <script type="text/javascript">
             $(function() {
+
                 $('#upload').click(function(){
                     var formData = new FormData($('form')[0]);
                     $.ajax({
@@ -55,10 +65,28 @@
                         processData: false,
                         contentType: false,
                         success: function(){
-                            location.reload();
+                            $('#error-message').show();
                         },
                         error: function(){
+
+                            location.reload();
+                        }
+                    });
+                });
+
+                $('.btn-danger').click(function(){
+                    var id = $(this).attr('href').replace('#', '');
+                    var url = "${request.route_url('crimes')}/${crime_document._metadata.id_doc}/images/"+id
+                    $.ajax({
+                        type: "DELETE",
+                        url: url,
+                        data: "",
+                        success: function(){
+
                             $('#error-message').show();
+                        },
+                        error: function(){
+                            location.reload();
                         }
                     });
                 });

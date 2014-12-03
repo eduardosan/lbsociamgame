@@ -73,8 +73,8 @@ class CrimeController(object):
         """
         List related images on category
         """
-        crime_document = json.dumps(self.crimes_base.get_document(self.request.matchdict['id_doc']))
-        log.debug(crime_document)
+        crime_document = self.crimes_base.get_document(self.request.matchdict['id_doc'])
+        crime_document['__valreq__'] = False
 
         return {
             'crime_document': crime_document,
@@ -95,13 +95,7 @@ class CrimeController(object):
         response = Response(content_type='application/json')
 
         # Primeiro insere o documento
-        url = self.crimes_base.lbgenerator_rest_url + "/" + self.crimes_base.lbbase._metadata.name + "/file"
-        result = requests.post(
-            url=url,
-            files={
-                'file': image.file.read()
-            }
-        )
+        result = self.crimes_base.upload_file(image)
 
         log.info("Status code: %s", result.status_code)
 
@@ -112,28 +106,31 @@ class CrimeController(object):
             return response
 
         file_dict = json.loads(result.text)
-        file_dict['filename'] = image.filename
-        file_dict['mimetype'] = image.type
+        #file_dict['filename'] = image.filename
+        #file_dict['mimetype'] = image.type
         log.debug("UUID para arquivo gerado: %s", file_dict)
 
-        url = self.crimes_base.lbgenerator_rest_url + "/" + self.crimes_base.lbbase._metadata.name + \
-              "/doc/" + id_doc + '/images'
-
-        log.debug("URL para insercao dos atributos da imagem %s", url)
-
-        result = requests.post(
-            url=url,
-            data={
-                'value': json.dumps(file_dict)
-            }
-        )
+        result = self.crimes_base.update_file_document(id_doc, file_dict)
 
         if result.status_code >= 300:
+            log.error("Erro na atualização da imagem %s", result.text)
             response.status_code = 500
             response.text = result.text
             return response
 
         response.status_code = 200
-        response.text = result.json()
+        response.text = result.text
+
+        return response
+
+    def remove_image(self):
+        """
+        Remove imagem da base
+        """
+        # Primeiro recupera o documento
+        id_doc = self.request.matchdict.get('id_doc')
+        id_file = self.request.matchdict.get('id_file')
+
+        response = self.crimes_base.remove_file(id_doc, id_file)
 
         return response

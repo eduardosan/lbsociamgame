@@ -29,3 +29,6 @@ def make_routes(cfg):
 
     cfg.add_route('insert_images', 'crime/{id_doc}/images/upload', request_method='POST')
     cfg.add_view(crime.CrimeController, attr='insert_images', route_name='insert_images')
+
+    cfg.add_route('remove_image', 'crime/{id_doc}/images/{id_file}', request_method='DELETE')
+    cfg.add_view(crime.CrimeController, attr='remove_image', route_name='remove_image')
