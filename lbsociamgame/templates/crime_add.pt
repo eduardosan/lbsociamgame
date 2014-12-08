@@ -6,7 +6,7 @@
         <div class="row">
           <div class="col-md-8">
 
-            <form class="form-horizontal" role="form" action="${request.route_url('crime_add')}" method="POST">
+            <form class="form-horizontal" role="form" action="${action}" method="POST">
                 ${renderer.csrf_token()}
                 <div class="form-group">
                     ${renderer.errorlist("category_name")}
@@ -27,6 +27,13 @@
                     <label class="col-lg-2 control-label">Description:</label>
                     <div class="col-lg-5">
                         ${renderer.textarea("description")}
+                    </div>
+                </div>
+                <div class="form-group">
+                    ${renderer.errorlist("default_token")}
+                    <label class="col-lg-2 control-label">Default token:</label>
+                    <div class="col-lg-5">
+                        ${renderer.textarea("default_token")}
                     </div>
                 </div>
                 <div class="form-group">

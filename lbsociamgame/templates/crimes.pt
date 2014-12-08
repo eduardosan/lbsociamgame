@@ -47,6 +47,10 @@
                                     <i class="glyphicon glyphicon-film"></i>
                                     Images
                                 </a>
+                                <a class="btn btn-default" href="${request.route_url('crimes')}/${crime['_metadata']['id_doc']}">
+                                    <i class="glyphicon glyphicon-edit"></i>
+                                    Edit
+                                </a>
                             </td>
                         </tr>
 

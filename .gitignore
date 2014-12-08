@@ -54,6 +54,7 @@ docs/_build/
 
 development.ini
 test.ini
+production.ini
 
 # Pycharm config
 .idea/

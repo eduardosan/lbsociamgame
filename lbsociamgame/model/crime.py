@@ -16,6 +16,7 @@ class CrimeSchema(Schema):
     category_name = validators.UnicodeString()
     category_pretty_name = validators.UnicodeString()
     description = validators.UnicodeString()
+    default_token = validators.UnicodeString()
 
 
 class ImageSchema(Schema):

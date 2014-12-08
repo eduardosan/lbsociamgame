@@ -56,7 +56,10 @@ class CrimeController(object):
 
             return HTTPFound(location="/crime")
 
-        return dict(renderer=FormRenderer(form))
+        return dict(
+            renderer=FormRenderer(form),
+            action=self.request.route_url('crime_add')
+        )
 
     def crimes(self):
         """
@@ -134,3 +137,57 @@ class CrimeController(object):
         response = self.crimes_base.remove_file(id_doc, id_file)
 
         return response
+
+    def crime_edit(self):
+        """
+        Crimes list for classification
+        :return:
+        """
+        # Retrieve id_doc
+        id_doc = self.request.matchdict['id_doc']
+        crime_dict = self.crimes_base.get_document(id_doc)
+        log.debug(crime_dict)
+
+        # Gera formulário
+        form = Form(self.request,
+                    defaults=crime_dict,
+                    schema=crime_schema.CrimeSchema())
+
+        if form.validate():
+            log.debug("Dados do formulário: ")
+
+            # Tenta instanciar o formulário no objeto
+            crime_obj = Crimes(
+                category_name=self.request.params.get('category_name'),
+                category_pretty_name=self.request.params.get('category_pretty_name'),
+                description=self.request.params.get('description'),
+                default_token=self.request.params.get('default_token'),
+                date=datetime.datetime.now()
+            )
+
+            # persist model somewhere...
+            #crime_obj.update(id_doc)
+
+            # Corrige bug das imagens
+            crime_up = conv.document2dict(self.crimes_base.lbbase, crime_obj)
+            crime_up['images'] = crime_dict.get('images')
+
+            url = self.crimes_base.lbgenerator_rest_url + '/' + self.crimes_base.lbbase.metadata.name + '/doc/' + id_doc
+            #log.debug(crime_up)
+            params = {
+                'value': json.dumps(crime_up)
+            }
+            response = requests.put(
+                url=url,
+                data=params
+            )
+
+            return HTTPFound(location="/crime")
+
+        return dict(
+            renderer=FormRenderer(form),
+            action=self.request.route_url(
+                'crime_edit',
+                id_doc=id_doc
+            )
+        )
