@@ -45,3 +45,15 @@ def make_routes(cfg):
     # Status routes
     cfg.add_route('status_category', 'status/class/{id_doc}/{id_cat}', request_method='POST')
     cfg.add_view(status.StatusController, attr='status_category', route_name='status_category')
+
+    cfg.add_route('status_bulk', 'status/bulk')
+    cfg.add_view(status.StatusController, attr='status_bulk', route_name='status_bulk',
+                 renderer='templates/status_bulk.pt')
+
+    cfg.add_route('status_up', 'status/up/{id}')
+    cfg.add_view(status.StatusController, attr='status_up', route_name='status_up',
+                 request_method='POST')
+
+    cfg.add_route('status_down', 'status/down/{id}')
+    cfg.add_view(status.StatusController, attr='status_down', route_name='status_down',
+                 request_method='POST')

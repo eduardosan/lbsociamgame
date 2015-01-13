@@ -65,7 +65,7 @@
 
                 $('.btn-default').click(function(){
                     var id = $(this).attr('href').replace('#', '');
-                    var url = "${request.route_url('status_category')}/${id_doc}/"+id
+                    var url = "${request.route_url('status_category')}/${id_doc}/"+id;
                     $.ajax({
                         type: "POST",
                         url: url,

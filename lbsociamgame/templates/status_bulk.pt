@@ -1,0 +1,120 @@
+<metal:main use-macro="load: master.pt">
+
+    <metal:content fill-slot="title">Status Classification</metal:content>
+
+    <metal:content fill-slot="content">
+
+        <h2>Status classification</h2>
+
+        <nav>
+          <ul class="pagination">
+
+            <li>
+              <a href="${request.route_url('status_bulk')}?page=${page - 1}"
+                  tal:condition="page != 1" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+
+            <li tal:repeat="i range(page, last_page)">
+
+              <a href="${request.route_url('status_bulk')}?page=${i}"
+                      tal:condition="i == last_page - 1" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+              <a href="${request.route_url('status_bulk')}?page=${i}"
+                      tal:condition="i != (last_page - 1) and i != 0">
+                ${i}
+              </a>
+            </li>
+
+          </ul>
+        </nav>
+
+
+        <div class="row" tal:repeat="status status_collection['results']">
+
+          <div class="col-md-8">
+
+            <div id="error-message" class="alert alert-danger" style="display:none">
+              Error in classification!
+            </div>
+
+              <div class="bs-callout bs-callout-info">
+
+                  <div class="well" style="color: #000000;">
+                      <p>${status['text']}</p>
+                      <?python
+                          import json
+                          source = json.loads(status['source'])
+                      ?>
+                      <h6>
+                          <a href="http://twitter.com/${source[0]['_user']['_screen_name']}/status/${source[0]['_id']}" target="_blank">${source[0]['_user']['_name']} on ${status['origin']} em ${source[0]['_created_at']}</a>
+                      </h6>
+
+                      <div id="evaluate">
+
+                          <a class="btn btn-default" href="#up/${status['_metadata']['id_doc']}">
+                              <i class="glyphicon glyphicon-thumbs-up"></i>
+                              True Crime
+                          </a>
+
+                          <a class="btn btn-default" href="#down/${status['_metadata']['id_doc']}">
+                              <i class="glyphicon glyphicon-thumbs-down"></i>
+                              False positive
+                          </a>
+                      </div>
+
+                  </div>
+
+                  <div class="media" tal:condition="exists: status['source'][0]['_user']['_profile_image_url']">
+                    <a class="media-left" href="http://twitter.com/${status['source'][0]['_user']['_screen_name']}" target="_blank">
+                      <img src="${status['source'][0]['_user']['_profile_image_url']}" alt="Twitter profile">
+                    </a>
+                    <div class="media-body">
+                      <h4 class="media-heading">${status['source'][0]['_user']['_name']}</h4>
+                      <a href="http://twitter.com/${status['source'][0]['_user']['_screen_name']}/status/${status.source[0]['_id']}" target="_blank">${status['source'][0]['_user']['_name']} on ${status['origin']} em ${status['source'][0]['_created_at']}</a>
+                    </div>
+                  </div>
+
+              </div>
+
+          </div>
+
+        </div>
+
+    </metal:content>
+
+    <metal:content fill-slot="javascript">
+        <script type="text/javascript">
+            $(function() {
+
+                $('.btn-default').click(function(){
+                    var id = $(this).attr('href').replace('#', '');
+                    var url = "/status/"+id;
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: "",
+                        success: function(){
+                            $(this).replaceWith('\
+                            <a class="btn btn-danger" href="#"> \
+                              <i class="glyphicon glyphicon-remove"></i> \
+                              Evaluation error \
+                            </a>');
+                        },
+                        error: function(){
+                            $(this).replaceWith('\
+                            <a class="btn btn-success" href="#"> \
+                              <i class="glyphicon glyphicon-ok"></i> \
+                              Thank you for evaluation \
+                            </a>');
+                        }
+                    });
+                });
+
+            });
+        </script>
+    </metal:content>
+
+</metal:main>

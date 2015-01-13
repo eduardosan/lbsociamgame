@@ -17,6 +17,7 @@ from lbsociam.model.lbstatus import Status, StatusBase
 from liblightbase.lbutils import conv
 from liblightbase.lbtypes import extended
 from requests.exceptions import HTTPError
+from ..lib import utils
 
 log = logging.getLogger()
 
@@ -85,5 +86,54 @@ class StatusController(object):
             category['tokens'] = list(set(category['tokens']))
 
         response = self.crimes_base.update_document(id_cat, category)
+
+        return response
+
+    def status_bulk(self):
+        """
+        Bulk classificate status
+        """
+        limit = 50
+        page = int(self.request.params.get('page'))
+        if page is None:
+            offset = 0
+            page = 1
+        else:
+            offset = (int(page) - 1) * limit
+
+        collection = self.status_base.get_status(
+            limit=limit,
+            offset=offset
+        )
+
+        total_pages = (int(collection['result_count']) // limit) + 1
+        last_page = page + 6
+        if total_pages < last_page:
+            last_page = total_pages
+
+        return {
+            'status_collection': collection,
+            'last_page': last_page,
+            'page': page
+        }
+
+    def status_up(self):
+        """
+        Positive evaluation for status
+        :return:
+        """
+        id_doc = self.request.matchdict['id']
+        try:
+            positives = int(self.status_base.documentrest.get_path(id_doc, ['positives']))
+        except HTTPError:
+            positives = 0
+        positives += positives
+
+        response = Response(content_type='application/json')
+
+        # Update on base
+        result = self.status_base.documentrest.update_path(id_doc, ['positives'], positives)
+        response.status_code = 200
+        response.text = result
 
         return response
