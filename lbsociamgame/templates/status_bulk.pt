@@ -52,7 +52,7 @@
                           <a href="http://twitter.com/${source[0]['_user']['_screen_name']}/status/${source[0]['_id']}" target="_blank">${source[0]['_user']['_name']} on ${status['origin']} em ${source[0]['_created_at']}</a>
                       </h6>
 
-                      <div id="evaluate">
+                      <div id="evaluate-${status['_metadata']['id_doc']}">
 
                           <a class="btn btn-default" href="#up/${status['_metadata']['id_doc']}">
                               <i class="glyphicon glyphicon-thumbs-up"></i>
@@ -63,6 +63,20 @@
                               <i class="glyphicon glyphicon-thumbs-down"></i>
                               False positive
                           </a>
+                      </div>
+
+                      <div id="success-${status['_metadata']['id_doc']}" style="display: none;">
+                        <a class="btn btn-success" href="#">
+                          <i class="glyphicon glyphicon-ok"></i>
+                          Thank you for evaluation
+                        </a>
+                      </div>
+
+                      <div id="error-${status['_metadata']['id_doc']}" style="display: none;">
+                        <a class="btn btn-danger" href="#">
+                          <i class="glyphicon glyphicon-remove"></i>
+                          Evaluation error
+                        </a>
                       </div>
 
                   </div>
@@ -83,6 +97,33 @@
 
         </div>
 
+        <nav>
+          <ul class="pagination">
+
+            <li>
+              <a href="${request.route_url('status_bulk')}?page=${page - 1}"
+                  tal:condition="page != 1" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+
+            <li tal:repeat="i range(page, last_page)">
+
+              <a href="${request.route_url('status_bulk')}?page=${i}"
+                      tal:condition="i == last_page - 1" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+              <a href="${request.route_url('status_bulk')}?page=${i}"
+                      tal:condition="i != (last_page - 1) and i != 0">
+                ${i}
+              </a>
+            </li>
+
+          </ul>
+        </nav>
+
+
+
     </metal:content>
 
     <metal:content fill-slot="javascript">
@@ -90,25 +131,23 @@
             $(function() {
 
                 $('.btn-default').click(function(){
-                    var id = $(this).attr('href').replace('#', '');
-                    var url = "/status/"+id;
+                    var url = $(this).attr('href').replace('#', '');
+                    var id = url.split('/')[1];
+                    var evaluate = '#evaluate-' + id;
+                    var error = '#error-' + id;
+                    var success = '#success-' + id;
+                    url = "/status/"+url;
                     $.ajax({
                         type: "POST",
                         url: url,
                         data: "",
                         success: function(){
-                            $(this).replaceWith('\
-                            <a class="btn btn-danger" href="#"> \
-                              <i class="glyphicon glyphicon-remove"></i> \
-                              Evaluation error \
-                            </a>');
+                            $( evaluate ).hide();
+                            $( error ).show();
                         },
                         error: function(){
-                            $(this).replaceWith('\
-                            <a class="btn btn-success" href="#"> \
-                              <i class="glyphicon glyphicon-ok"></i> \
-                              Thank you for evaluation \
-                            </a>');
+                            $( evaluate ).hide();
+                            $( success ).show();
                         }
                     });
                 });

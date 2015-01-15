@@ -94,16 +94,20 @@ class StatusController(object):
         Bulk classificate status
         """
         limit = 50
-        page = int(self.request.params.get('page'))
+        page = self.request.params.get('page')
         if page is None:
             offset = 0
             page = 1
         else:
             offset = (int(page) - 1) * limit
+            page = int(page)
 
+        # Get only documents with identified events
+        literal = "json_array_length((document->>'events_tokens')::json) > 0"
         collection = self.status_base.get_status(
             limit=limit,
-            offset=offset
+            offset=offset,
+            literal=literal
         )
 
         total_pages = (int(collection['result_count']) // limit) + 1
@@ -127,12 +131,37 @@ class StatusController(object):
             positives = int(self.status_base.documentrest.get_path(id_doc, ['positives']))
         except HTTPError:
             positives = 0
-        positives += positives
+
+        # add 1 on positive evaluations
+        positives += 1
 
         response = Response(content_type='application/json')
 
         # Update on base
         result = self.status_base.documentrest.update_path(id_doc, ['positives'], positives)
+        response.status_code = 200
+        response.text = result
+
+        return response
+
+    def status_down(self):
+        """
+        Positive evaluation for status
+        :return:
+        """
+        id_doc = self.request.matchdict['id']
+        try:
+            negatives = int(self.status_base.documentrest.get_path(id_doc, ['negatives']))
+        except HTTPError:
+            negatives = 0
+
+        # add 1 on positive evaluations
+        negatives += 1
+
+        response = Response(content_type='application/json')
+
+        # Update on base
+        result = self.status_base.documentrest.update_path(id_doc, ['negatives'], negatives)
         response.status_code = 200
         response.text = result
 
