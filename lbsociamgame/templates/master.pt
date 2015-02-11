@@ -30,7 +30,7 @@
   <body>
 
     <div class="starter-template">
-      <div class="container">
+      <div class="container-fluid">
           <metal:content define-slot="content" />
       </div>
     </div>

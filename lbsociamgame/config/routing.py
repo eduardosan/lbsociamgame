@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'eduardo'
 
-from lbsociamgame.views import crime, status
+from lbsociamgame.views import crime, status, analysis
 
 
 def make_routes(cfg):
@@ -57,3 +57,8 @@ def make_routes(cfg):
     cfg.add_route('status_down', 'status/down/{id}')
     cfg.add_view(status.StatusController, attr='status_down', route_name='status_down',
                  request_method='POST')
+
+    # Violence and criminality
+    cfg.add_route('crime_analysis', 'analysis/crime')
+    cfg.add_view(analysis.AnalysisController, attr='crime_analysis',
+                 route_name='crime_analysis', renderer='templates/analysis/crime.pt')
