@@ -1,0 +1,145 @@
+<metal:main use-macro="load: ../master.pt">
+
+    <metal:content fill-slot="title">Violence and criminality analysis</metal:content>
+
+    <metal:content fill-slot="content">
+
+        <div class="row" id="analysis">
+
+            <div class="col-md-2">
+                <!-- Categories on the left -->
+                <div class="row" id="taxonomy">
+                    <!-- Terms grouped by taxonomy -->
+                    <div id="load-tax" class="loading"></div>
+
+                </div>
+
+                <div class="row">
+                    <!-- Terms frequency matrix -->
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="row" id="map_canvas">
+                    <!-- Map with status on the country -->
+                    <div id="load-maps" class="loading"></div>
+                </div>
+
+                <div class="row">
+                    <!-- Document list -->
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="row">
+                    <!-- Tag clouds -->
+                </div>
+            </div>
+
+
+        </div>
+
+    </metal:content>
+
+    <metal:content fill-slot="javascript">
+
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=${key}&sensor=true&region=BR"></script>
+        <script src="${request.static_url('lbsociamgame:static/js/lib/maps.js')}"></script>
+
+        <script type="text/javascript">
+
+            $(function() {
+
+                $(document).ready(function(){
+
+                    $.ajax({
+                        type: "GET",
+                        url: "${request.route_url('crime_topics')}",
+                        data: "",
+                        dataType: "json",
+                        success: function(topics){
+                            $( '#load-tax' ).hide();
+                            //var topics = data;
+                            // Asynchronously load the template.
+                            var html = '<ul class="list-group">';
+                            for (i in topics ) {
+                                //alert(topics[i]);
+                                html += '<li class="list-group-item"><h4>Topic #'+i+'</h4>';
+                                html += '<ul class="list-group">';
+                                for (var j = 0; j < topics[i].length ; j++) {
+                                    html += '<li class="list-group-item">';
+                                    html += '<span class="badge">'+parseFloat(topics[i][j]['probability']).toPrecision(3)+'</span>';
+                                    html += topics[i][j]['word'];
+                                    html += '</li>';
+                                }
+                                html += '</ul>';
+                                html += '</li>';
+                            }
+                            html += '</ul>';
+
+                            // Add HTML to taxonomy elm
+                            $( '#taxonomy' ).append(html);
+                        },
+                        error: function(){
+                            alert("Entrei no Fail");
+                        },
+                        load: function(){
+                            $( '#load-tax' ).show();
+                        }
+                    });
+
+                    // Load maps
+                    //initialize();
+
+
+                    // Load maps for elements with location
+                    $.ajax({
+                        type: "GET",
+                        url: "${request.route_url('crime_locations')}",
+                        data: "",
+                        dataType: "json",
+                        success: function(status){
+                            $( '#load-maps' ).hide();
+                            //var topics = data;
+                            // Asynchronously load the maps elements.
+                            var markers = [];
+                            for (var i = 0; i < status['result_count']; i++ ) {
+                                var title = "Status id " + status['results'][i]['_metadata']['id_doc'];
+                                // Consider only positive status
+                                if (( 'location' in status['results'][i]) && ('positives' in status['results'][i])) {
+                                    if ('negatives' in status['results'][i]) {
+                                        if (status['results'][i]['positives'] > status['results']['negatives']) {
+                                            markers.push({
+                                                'latitude': status['results'][i]['location']['latitude'],
+                                                'longitude': status['results'][i]['location']['longitude'],
+                                                'title': title
+                                            });
+                                        }
+                                    } else {
+                                        markers.push({
+                                            'latitude': status['results'][i]['location']['latitude'],
+                                            'longitude': status['results'][i]['location']['longitude'],
+                                            'title': title
+                                        });
+                                    }
+                                }
+                            }
+
+                            // Load Map with all markers
+                            initialize(markers);
+
+                        },
+                        error: function(){
+                            alert("Entrei no Fail");
+                        },
+                        load: function(){
+                            $( '#load-maps' ).show();
+                        }
+                    });
+
+                });
+            });
+        </script>
+    </metal:content>
+
+</metal:main>

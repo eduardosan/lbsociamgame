@@ -62,3 +62,11 @@ def make_routes(cfg):
     cfg.add_route('crime_analysis', 'analysis/crime')
     cfg.add_view(analysis.AnalysisController, attr='crime_analysis',
                  route_name='crime_analysis', renderer='templates/analysis/crime.pt')
+
+    cfg.add_route('crime_topics', 'analysis/crime/topics')
+    cfg.add_view(analysis.AnalysisController, attr='crime_topics', route_name='crime_topics',
+                 request_method='GET', renderer='json')
+
+    cfg.add_route('crime_locations', 'analysis/crime/locations')
+    cfg.add_view(analysis.AnalysisController, attr='crime_locations', route_name='crime_locations',
+                 request_method='GET', renderer='json')

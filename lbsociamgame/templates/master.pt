@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="pyramid web application">
     <meta name="author" content="Pylons Project">
-    <link rel="shortcut icon" href="${request.static_url('lbsociamgame:static/pyramid-16x16.png')}">
+    <link rel="shortcut icon" href="${request.static_url('lbsociamgame:static/img/pyramid-16x16.png')}">
 
     <title>
         <metal:content define-slot="title">
@@ -18,7 +18,10 @@
     <link href="${request.static_url('lbsociamgame:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet">
 
     <!-- Custom styles for this scaffold -->
-    <link href="${request.static_url('lbsociamgame:static/theme.css')}" rel="stylesheet">
+    <link href="${request.static_url('lbsociamgame:static/css/theme.css')}" rel="stylesheet">
+    <link href="${request.static_url('lbsociamgame:static/css/master.css')}" rel="stylesheet">
+    <metal:content define-slot="css" />
+
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -41,6 +44,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="${request.static_url('lbsociamgame:static/jquery/js/jquery-1.11.2.min.js')}"></script>
     <script src="${request.static_url('lbsociamgame:static/bootstrap/js/bootstrap.min.js')}"></script>
+    <script src="${request.static_url('lbsociamgame:static/jquery/js/plugins/NETEYE-activity-indicator-1.0.0/jquery.activity-indicator-1.0.0.min.js')}"></script>
 
     <!-- Slot para o JavaScript -->
     <metal:content define-slot="javascript" />
