@@ -8,6 +8,7 @@ import operator
 from lbsociam.model.crimes import CrimesBase
 from lbsociam.model.lbstatus import StatusBase
 from lbsociam.model.corpus import EventsCorpus
+from lbsociam.model.dictionary import DictionaryBase
 from gensim.models import ldamodel
 from requests.exceptions import HTTPError
 from pyramid.response import Response
@@ -27,6 +28,7 @@ class AnalysisController(object):
         self.request = request
         self.crimes_base = CrimesBase()
         self.status_base = StatusBase()
+        self.dic_base = DictionaryBase()
 
     def crime_analysis(self):
         """
@@ -34,10 +36,13 @@ class AnalysisController(object):
         :return:
         """
         search_url = self.status_base.lbgenerator_rest_url + self.status_base.lbbase.metadata.name + '/doc'
+        terms = self.dic_base.get_token_frequency(limit=20)
+
 
         return {
             'search_url': search_url,
-            'key': self.status_base.gmaps_api_key
+            'key': self.status_base.gmaps_api_key,
+            'terms': terms
         }
 
     def crime_topics(self):

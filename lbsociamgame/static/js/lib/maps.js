@@ -4,7 +4,7 @@
 function initialize(markers) {
     // Center map in Brasilia
     var mapOptions = {
-        zoom: 4,
+        zoom: 8,
         center: new google.maps.LatLng(-15.4647, -47.5547),
         mapTypeId: google.maps.MapTypeId.HYBRID
     };

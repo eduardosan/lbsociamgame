@@ -14,23 +14,43 @@
 
                 </div>
 
-                <div class="row">
-                    <!-- Terms frequency matrix -->
-                </div>
             </div>
 
             <div class="col-md-8">
-                <div class="row" id="map_canvas">
+                <div class="row">
                     <!-- Map with status on the country -->
                     <div id="load-maps" class="loading"></div>
+                    <div id="map_canvas" style="height: 500px; width: 100%;"></div>
                 </div>
 
                 <div class="row">
                     <!-- Document list -->
+                    <table class="table-bordered" id="status-table" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">Date</th>
+                                <th style="width: 5%;">+/-</th>
+                                <th style="width: 75%;">Status</th>
+                                <th style="width: 10%;">Origin</th>
+                            </tr>
+                        </thead>
+                        <tbody id="status">
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
             <div class="col-md-2">
+                <div class="row">
+                    <!-- Terms frequency matrix -->
+                    <ul class="list-group">
+                      <li class="list-group-item" tal:repeat="elm terms['results']">
+                        <span class="badge">${elm['frequency']}</span>
+                        ${elm['token']}
+                      </li>
+                    </ul>
+                </div>
+
                 <div class="row">
                     <!-- Tag clouds -->
                 </div>
@@ -100,9 +120,12 @@
                         dataType: "json",
                         success: function(status){
                             $( '#load-maps' ).hide();
+                            $( '#status-table').show();
                             //var topics = data;
                             // Asynchronously load the maps elements.
                             var markers = [];
+                            var evaluation = 0;
+                            var html = "";
                             for (var i = 0; i < status['result_count']; i++ ) {
                                 var title = "Status id " + status['results'][i]['_metadata']['id_doc'];
                                 // Consider only positive status
@@ -114,6 +137,7 @@
                                                 'longitude': status['results'][i]['location']['longitude'],
                                                 'title': title
                                             });
+                                            evaluation = parseInt(status['results'][i]['positives']) - parseInt(status['results']['negatives'])
                                         }
                                     } else {
                                         markers.push({
@@ -121,7 +145,20 @@
                                             'longitude': status['results'][i]['location']['longitude'],
                                             'title': title
                                         });
+                                        evaluation = parseInt(status['results'][i]['positives']);
                                     }
+                                }
+
+                                // Add status visualization
+                                if (i < 10) {
+                                    // Only 10 first status with more positives
+                                    html += "<tr>";
+                                    html += "<td>" + status['results'][i]['inclusion_datetime'] + "</td>";
+                                    html += "<td>" + evaluation.toString() + "</td>";
+                                    html += "<td>" + status['results'][i]['text'] + "</td>";
+                                    html += "<td>" + status['results'][i]['origin'] + "</td>";
+                                    html += "</tr>";
+                                    $( '#status' ).append(html);
                                 }
                             }
 
