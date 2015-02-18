@@ -1,0 +1,6 @@
+<div class="embed" id="${status['_metadata']['id_doc']}">
+    <div class="bs-callout bs-callout-info">
+        <div class="well" style="color: #000000;" tal:content="structure oembed_html">
+        </div>
+    </div>
+</div>

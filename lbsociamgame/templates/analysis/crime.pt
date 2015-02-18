@@ -128,6 +128,8 @@
                             var html = "";
                             for (var i = 0; i < status['result_count']; i++ ) {
                                 var title = "Status id " + status['results'][i]['_metadata']['id_doc'];
+                                var embed_url = "/embed/twitter/" + status['results'][i]['_metadata']['id_doc'];
+                                var status_id = status['results'][i]['_metadata']['id_doc'];
                                 // Consider only positive status
                                 if (( 'location' in status['results'][i]) && ('positives' in status['results'][i])) {
                                     if ('negatives' in status['results'][i]) {
@@ -135,7 +137,9 @@
                                             markers.push({
                                                 'latitude': status['results'][i]['location']['latitude'],
                                                 'longitude': status['results'][i]['location']['longitude'],
-                                                'title': title
+                                                'title': title,
+                                                'embed_url': embed_url,
+                                                'status_id': status_id
                                             });
                                             evaluation = parseInt(status['results'][i]['positives']) - parseInt(status['results']['negatives'])
                                         }
@@ -143,7 +147,9 @@
                                         markers.push({
                                             'latitude': status['results'][i]['location']['latitude'],
                                             'longitude': status['results'][i]['location']['longitude'],
-                                            'title': title
+                                            'title': title,
+                                            'embed_url': embed_url,
+                                            'status_id': status_id
                                         });
                                         evaluation = parseInt(status['results'][i]['positives']);
                                     }

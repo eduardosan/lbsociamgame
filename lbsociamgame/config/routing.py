@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'eduardo'
 
-from lbsociamgame.views import crime, status, analysis
+from lbsociamgame.views import crime, status, analysis, embed
 
 
 def make_routes(cfg):
@@ -70,3 +70,7 @@ def make_routes(cfg):
     cfg.add_route('crime_locations', 'analysis/crime/locations')
     cfg.add_view(analysis.AnalysisController, attr='crime_locations', route_name='crime_locations',
                  request_method='GET', renderer='json')
+
+    cfg.add_route('twitter_embed', 'embed/twitter/{status_id}')
+    cfg.add_view(embed.EmbedController, attr='twitter_embed', route_name='twitter_embed',
+                 request_method='GET', renderer='templates/embed/twitter.pt')
