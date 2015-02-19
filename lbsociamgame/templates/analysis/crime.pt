@@ -2,6 +2,10 @@
 
     <metal:content fill-slot="title">Violence and criminality analysis</metal:content>
 
+    <metal:content fill-slot="breadcrumbs">
+        <li class="active">Crime Analysis</li>
+    </metal:content>
+
     <metal:content fill-slot="content">
 
         <div class="row" id="analysis">
@@ -65,6 +69,7 @@
 
         <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=${key}&sensor=true&region=BR"></script>
         <script src="${request.static_url('lbsociamgame:static/js/lib/maps.js')}"></script>
+        <script src="${request.static_url('lbsociamgame:static/js/lib/analysis.js')}"></script>
 
         <script type="text/javascript">
 
@@ -82,7 +87,7 @@
                             //var topics = data;
                             // Asynchronously load the template.
                             var html = '<ul class="list-group">';
-                            for (i in topics ) {
+                            for (var i in topics ) {
                                 //alert(topics[i]);
                                 html += '<li class="list-group-item"><h4>Topic #'+i+'</h4>';
                                 html += '<ul class="list-group">';
@@ -118,7 +123,7 @@
                         url: "${request.route_url('crime_locations')}",
                         data: "",
                         dataType: "json",
-                        success: function(status){
+                        success: function(result){
                             $( '#load-maps' ).hide();
                             $( '#status-table').show();
                             //var topics = data;
@@ -126,10 +131,20 @@
                             var markers = [];
                             var evaluation = 0;
                             var html = "";
+
+                            // Get results
+                            var status = result['status'];
+                            var crimes = result['crimes'];
+
                             for (var i = 0; i < status['result_count']; i++ ) {
+                                // Get Category for this token
+                                var category = findTokenCategory(status['results'][i]['search_term'], crimes);
+
+                                // Load default data
                                 var title = "Status id " + status['results'][i]['_metadata']['id_doc'];
                                 var embed_url = "/embed/twitter/" + status['results'][i]['_metadata']['id_doc'];
                                 var status_id = status['results'][i]['_metadata']['id_doc'];
+
                                 // Consider only positive status
                                 if (( 'location' in status['results'][i]) && ('positives' in status['results'][i])) {
                                     if ('negatives' in status['results'][i]) {
@@ -139,7 +154,8 @@
                                                 'longitude': status['results'][i]['location']['longitude'],
                                                 'title': title,
                                                 'embed_url': embed_url,
-                                                'status_id': status_id
+                                                'status_id': status_id,
+                                                'category': category
                                             });
                                             evaluation = parseInt(status['results'][i]['positives']) - parseInt(status['results']['negatives'])
                                         }
@@ -149,7 +165,8 @@
                                             'longitude': status['results'][i]['location']['longitude'],
                                             'title': title,
                                             'embed_url': embed_url,
-                                            'status_id': status_id
+                                            'status_id': status_id,
+                                            'category': category
                                         });
                                         evaluation = parseInt(status['results'][i]['positives']);
                                     }

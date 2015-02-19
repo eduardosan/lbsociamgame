@@ -20,10 +20,23 @@ function initialize(markers) {
                 markers[i]['longitude']
         );
 
+        // Change marker color
+        var pinColor = markers[i]['category']['color'];
+        var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+            new google.maps.Size(21, 34),
+            new google.maps.Point(0,0),
+            new google.maps.Point(10, 34));
+        var pinShadow = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_shadow",
+            new google.maps.Size(40, 37),
+            new google.maps.Point(0, 0),
+            new google.maps.Point(12, 35));
+
         var mk = new google.maps.Marker({
             position: myLatlng,
             map: map,
-            title: markers[i]['title']
+            title: markers[i]['title'],
+            icon: pinImage,
+            shadow: pinShadow
         });
 
         loadWindow(mk, markers[i]);

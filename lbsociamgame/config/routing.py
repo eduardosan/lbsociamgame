@@ -22,6 +22,10 @@ def make_routes(cfg):
     cfg.add_view(crime.CrimeController, attr='crime_edit', route_name='crime_edit',
                  renderer='templates/crime_add.pt')
 
+    cfg.add_route('crime_delete', 'crime/delete/{id_doc}')
+    cfg.add_view(crime.CrimeController, attr='crime_delete', route_name='crime_delete',
+                 request_method='DELETE', renderer='json')
+
     # Crime classification routes
     cfg.add_route('crimes', 'crime')
     cfg.add_view(crime.CrimeController, attr='crimes', route_name='crimes',

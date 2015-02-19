@@ -12,6 +12,9 @@
     padding: 0;
     background-color: #ffffff;
 }
-.row {
+#analysis .row {
     background-color: #ffffff;
+}
+.form-horizontal {
+    color: black;
 }

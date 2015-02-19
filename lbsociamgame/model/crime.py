@@ -1,7 +1,7 @@
 #!/usr/env python
 # -*- coding: utf-8 -*-
 __author__ = 'eduardo'
-
+import datetime
 from formencode import Schema, validators
 
 
@@ -17,6 +17,9 @@ class CrimeSchema(Schema):
     category_pretty_name = validators.UnicodeString()
     description = validators.UnicodeString()
     default_token = validators.UnicodeString()
+    tokens = validators.Set()
+    date = datetime.datetime.now()
+    color = validators.UnicodeString()
 
 
 class ImageSchema(Schema):

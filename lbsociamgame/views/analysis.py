@@ -70,7 +70,7 @@ class AnalysisController(object):
         topics_list = lda.show_topics(num_topics=n_topics, formatted=False)
         base_info = self.status_base.get_base()
         total_status = int(base_info['result_count'])
-        #log.debug(topics_list)
+        # log.debug(topics_list)
 
         saida = dict()
         i = 0
@@ -97,4 +97,9 @@ class AnalysisController(object):
 
         status_locations = self.status_base.get_locations()
 
-        return status_locations
+        # Now find category color
+        crimes = self.crimes_base.get_all()
+        return {
+            'status': status_locations,
+            'crimes': crimes
+        }

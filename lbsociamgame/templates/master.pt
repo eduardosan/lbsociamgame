@@ -17,6 +17,9 @@
     <!-- Bootstrap core CSS -->
     <link href="${request.static_url('lbsociamgame:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet">
 
+      <!-- Bootstrap Form Helpers -->
+    <link href="${request.static_url('lbsociamgame:static/bootstrapformhelpers/css/bootstrap-form-helpers.min.css')}" rel="stylesheet" media="screen">
+
     <!-- Custom styles for this scaffold -->
     <link href="${request.static_url('lbsociamgame:static/css/theme.css')}" rel="stylesheet">
     <link href="${request.static_url('lbsociamgame:static/css/master.css')}" rel="stylesheet">
@@ -34,6 +37,10 @@
 
     <div class="starter-template">
       <div class="container-fluid">
+          <ol class="breadcrumb">
+              <li><a href="${request.route_url('home')}">Home</a></li>
+              <metal:content define-slot="breadcrumbs" />
+          </ol>
           <metal:content define-slot="content" />
       </div>
     </div>
@@ -44,7 +51,11 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="${request.static_url('lbsociamgame:static/jquery/js/jquery-1.11.2.min.js')}"></script>
     <script src="${request.static_url('lbsociamgame:static/bootstrap/js/bootstrap.min.js')}"></script>
+
     <script src="${request.static_url('lbsociamgame:static/jquery/js/plugins/NETEYE-activity-indicator-1.0.0/jquery.activity-indicator-1.0.0.min.js')}"></script>
+
+     <!-- Bootstrap Form Helpers -->
+    <script src="${request.static_url('lbsociamgame:static/bootstrapformhelpers/js/bootstrap-formhelpers.js')}"></script>
 
     <!-- Slot para o JavaScript -->
     <metal:content define-slot="javascript" />

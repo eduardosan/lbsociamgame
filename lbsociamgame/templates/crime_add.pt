@@ -2,6 +2,11 @@
 
     <metal:content fill-slot="title">Category registration</metal:content>
 
+    <metal:content fill-slot="breadcrumbs">
+        <li><a href="${request.route_url('crimes')}">Categories</a></li>
+        <li class="active">Categories Add/Edit</li>
+    </metal:content>
+
     <metal:content fill-slot="content">
         <div class="row">
           <div class="col-md-8">
@@ -34,6 +39,20 @@
                     <label class="col-lg-2 control-label">Default token:</label>
                     <div class="col-lg-5">
                         ${renderer.textarea("default_token")}
+                    </div>
+                </div>
+                <div class="form-group">
+                    ${renderer.errorlist("tokens")}
+                    <label class="col-lg-2 control-label">Tokens list:</label>
+                    <div class="col-lg-5">
+                        ${renderer.textarea("tokens")}
+                    </div>
+                </div>
+                <div class="form-group">
+                    ${renderer.errorlist("color")}
+                    <label class="col-lg-2 control-label">Category color:</label>
+                    <div class="col-lg-5">
+                        <div class="bfh-colorpicker" data-name="color" data-close="false"></div>
                     </div>
                 </div>
                 <div class="form-group">

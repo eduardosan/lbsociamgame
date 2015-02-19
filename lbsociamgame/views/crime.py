@@ -36,19 +36,24 @@ class CrimeController(object):
         :return:
         """
         # Gera formulário
-        form = Form(self.request,
-                    defaults={},
-                    schema=crime_schema.CrimeSchema())
+        form = Form(
+            self.request,
+            defaults={},
+            schema=crime_schema.CrimeSchema()
+        )
 
         if form.validate():
             log.debug("Dados do formulário: ")
 
             # Tenta instanciar o formulário no objeto
             crime_obj = Crimes(
-                category_name=self.request.params.get('category_name'),
-                category_pretty_name=self.request.params.get('category_pretty_name'),
-                description=self.request.params.get('description'),
-                date=datetime.datetime.now()
+                category_name=form.data.get('category_name'),
+                category_pretty_name=form.data.get('category_pretty_name'),
+                description=form.data.get('description'),
+                date=datetime.datetime.now(),
+                default_token=form.data.get('default_token'),
+                tokens=form.data.get('tokens'),
+                color=form.data.get('color')
             )
 
             # persist model somewhere...
@@ -149,38 +154,33 @@ class CrimeController(object):
         log.debug(crime_dict)
 
         # Gera formulário
-        form = Form(self.request,
-                    defaults=crime_dict,
-                    schema=crime_schema.CrimeSchema())
+        form = Form(
+            self.request,
+            defaults=crime_dict,
+            schema=crime_schema.CrimeSchema()
+        )
 
         if form.validate():
             log.debug("Dados do formulário: ")
 
             # Tenta instanciar o formulário no objeto
             crime_obj = Crimes(
-                category_name=self.request.params.get('category_name'),
-                category_pretty_name=self.request.params.get('category_pretty_name'),
-                description=self.request.params.get('description'),
-                default_token=self.request.params.get('default_token'),
-                date=datetime.datetime.now()
+                category_name=form.data.get('category_name'),
+                category_pretty_name=form.data.get('category_pretty_name'),
+                description=form.data.get('description'),
+                date=datetime.datetime.now(),
+                default_token=form.data.get('default_token'),
+                tokens=form.data.get('tokens'),
+                color=form.data.get('color')
             )
 
             # persist model somewhere...
-            #crime_obj.update(id_doc)
+            crime_obj.update(id_doc)
 
-            # Corrige bug das imagens
-            crime_up = conv.document2dict(self.crimes_base.lbbase, crime_obj)
-            crime_up['images'] = crime_dict.get('images')
-
-            url = self.crimes_base.lbgenerator_rest_url + '/' + self.crimes_base.lbbase.metadata.name + '/doc/' + id_doc
-            #log.debug(crime_up)
-            params = {
-                'value': json.dumps(crime_up)
-            }
-            response = requests.put(
-                url=url,
-                data=params
-            )
+            if crime_dict.get('images') is not None:
+                for file_dict in crime_dict['images']:
+                    # It is necessary to update with every file again
+                    result = self.crimes_base.update_file_document(id_doc, file_dict)
 
             return HTTPFound(location="/crime")
 
@@ -191,3 +191,12 @@ class CrimeController(object):
                 id_doc=id_doc
             )
         )
+
+    def crime_delete(self):
+        """
+        Remove category from database
+        """
+        # Get document from Base
+        id_doc = self.request.matchdict.get('id_doc')
+
+        return self.crimes_base.documentrest.delete(id_doc)

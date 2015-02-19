@@ -2,6 +2,10 @@
 
     <metal:content fill-slot="title">Category registration</metal:content>
 
+    <metal:content fill-slot="breadcrumbs">
+        <li class="active">Categories</li>
+    </metal:content>
+
     <metal:content fill-slot="content">
         <div class="row">
           <div class="col-md-12">
@@ -12,6 +16,14 @@
                   <div class="panel-body">
                     <p style="color: #000000;">Criminal activity taxonomy</p>
                   </div>
+              </div>
+
+              <div id="error-message" class="alert alert-danger" style="display: none;">
+                Error excluding category!
+              </div>
+
+              <div id="success-message" class="alert alert-success" style="display: none;">
+                Change successfull!
               </div>
 
               <div class="navbar-left">
@@ -30,7 +42,9 @@
                             <th>Pretty Name</th>
                             <th>Description</th>
                             <th>Default Token</th>
+                            <th>Other tokens</th>
                             <th>Date</th>
+                            <th>Color</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -41,6 +55,8 @@
                             <td>${crime.get('category_pretty_name')}</td>
                             <td>${crime.get('description')}</td>
                             <td>${crime.get('default_token')}</td>
+                            <td>${crime.get('tokens')}</td>
+                            <td style="background-color: ${crime.get('color')};">${crime.get('color')}</td>
                             <td>${crime.get('date')}</td>
                             <td>
                                 <a class="btn btn-default" href="${request.route_url('crimes')}/${crime['_metadata']['id_doc']}/images">
@@ -50,6 +66,10 @@
                                 <a class="btn btn-default" href="${request.route_url('crimes')}/${crime['_metadata']['id_doc']}">
                                     <i class="glyphicon glyphicon-edit"></i>
                                     Edit
+                                </a>
+                                <a class="btn btn-default" href="#${crime['_metadata']['id_doc']}" onclick="deleteCrime(this);">
+                                    <i class="glyphicon glyphicon-remove"></i>
+                                    Remove
                                 </a>
                             </td>
                         </tr>
@@ -61,6 +81,29 @@
           </div>
 
         </div>
+    </metal:content>
+
+    <metal:content fill-slot="javascript">
+
+        <script type="text/javascript">
+
+            function deleteCrime(elm) {
+                var id = $(elm).attr('href').replace('#', '');
+                var url = "${request.route_url('crimes')}/delete/"+id;
+                $.ajax({
+                    type: "DELETE",
+                    url: url,
+                    data: "",
+                    success: function(){
+                        location.reload();
+                    },
+                    error: function(){
+                        $('#error-message').show();
+                    }
+                });
+            }
+
+        </script>
     </metal:content>
 
 </metal:main>
