@@ -134,12 +134,8 @@
 
                             // Get results
                             var status = result['status'];
-                            var crimes = result['crimes'];
 
                             for (var i = 0; i < status['result_count']; i++ ) {
-                                // Get Category for this token
-                                var category = findTokenCategory(status['results'][i]['search_term'], crimes);
-
                                 // Load default data
                                 var title = "Status id " + status['results'][i]['_metadata']['id_doc'];
                                 var embed_url = "/embed/twitter/" + status['results'][i]['_metadata']['id_doc'];
@@ -155,7 +151,7 @@
                                                 'title': title,
                                                 'embed_url': embed_url,
                                                 'status_id': status_id,
-                                                'category': category
+                                                'category': status['results'][i]['category']
                                             });
                                             evaluation = parseInt(status['results'][i]['positives']) - parseInt(status['results']['negatives'])
                                         }
@@ -166,7 +162,7 @@
                                             'title': title,
                                             'embed_url': embed_url,
                                             'status_id': status_id,
-                                            'category': category
+                                            'category': status['results'][i]['category']
                                         });
                                         evaluation = parseInt(status['results'][i]['positives']);
                                     }

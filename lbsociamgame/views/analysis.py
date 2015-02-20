@@ -4,14 +4,12 @@ __author__ = 'eduardo'
 
 import logging
 import time
-import operator
 from lbsociam.model.crimes import CrimesBase
 from lbsociam.model.lbstatus import StatusBase
-from lbsociam.model.corpus import EventsCorpus
 from lbsociam.model.dictionary import DictionaryBase
-from gensim.models import ldamodel
 from requests.exceptions import HTTPError
 from pyramid.response import Response
+from ..lib import utils
 
 log = logging.getLogger()
 
@@ -58,14 +56,14 @@ class AnalysisController(object):
             n_topics = int(n_topics)
 
         t0 = time.clock()
-        c = EventsCorpus()
+        c = utils.get_events_corpus()
         t1 = time.clock() - t0
         log.debug("Time to generate Corpus: %s seconds", t1)
 
         t0 = time.clock()
-        lda = ldamodel.LdaModel(c.corpus, id2word=c.dic, num_topics=n_topics)
+        lda = utils.get_lda(n_topics, c)
         t1 = time.clock() - t0
-        log.debug("Time to generate LDA Modelfor %s topics: %s seconds", n_topics, t1)
+        log.debug("Time to generate LDA Model for %s topics: %s seconds", n_topics, t1)
 
         topics_list = lda.show_topics(num_topics=n_topics, formatted=False)
         base_info = self.status_base.get_base()
@@ -97,9 +95,18 @@ class AnalysisController(object):
 
         status_locations = self.status_base.get_locations()
 
-        # Now find category color
-        crimes = self.crimes_base.get_all()
+        # Now find category
+        i = 0
+        for status in status_locations['results']:
+            if status.get('events_tokens'):
+                category = utils.get_category(status['events_tokens'])
+            else:
+                category = utils.get_category([status['search_term']])
+
+            # Update dict with recently found category
+            status_locations['results'][i]['category'] = category
+            i += 1
+
         return {
-            'status': status_locations,
-            'crimes': crimes
+            'status': status_locations
         }

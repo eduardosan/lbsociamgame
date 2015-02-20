@@ -15,6 +15,7 @@ from requests.exceptions import HTTPError
 from pyramid.response import Response
 from liblightbase.lbutils import conv
 from pyramid.exceptions import HTTPBadRequest
+from ..lib import utils
 
 log = logging.getLogger()
 
@@ -56,6 +57,12 @@ class EmbedController(object):
 
         # Get status oembed
         oembed = self.lbt.api.GetStatusOembed(id=status_dict['source']['_id'], lang='pt')
+
+        # Get category
+        if status_dict.get('events_tokens') is None:
+            status_dict['category'] = utils.get_category(status_dict['events_tokens'])
+        else:
+            status_dict['category'] = utils.get_category([status_dict['search_term']])
 
         return {
             'oembed_html': oembed['html'],

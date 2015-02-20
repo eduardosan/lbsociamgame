@@ -8,12 +8,13 @@ import requests
 import json
 from pyramid_simpleform import Form
 from pyramid_simpleform.renderers import FormRenderer
-from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
+from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, HTTPNotFound
 from pyramid.response import Response
 from lbsociamgame.model import crime as crime_schema
 from lbsociam.model.crimes import Crimes, CrimesBase
 from liblightbase.lbutils import conv
 from liblightbase.lbtypes import extended
+from ..lib import utils
 
 log = logging.getLogger()
 

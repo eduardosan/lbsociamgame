@@ -3,13 +3,16 @@
 from pyramid.config import Configurator
 from pyramid.session import SignedCookieSessionFactory
 from lbsociamgame import config as cfg
-from lbsociam import config as lbconfig
+from pyramid_beaker import set_cache_regions_from_settings
 
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     cfg.setup(settings)
+
+    # Load cache config
+    set_cache_regions_from_settings(settings)
 
     config = Configurator(settings=settings)
     config.include('pyramid_chameleon')
