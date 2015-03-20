@@ -73,15 +73,21 @@ class AnalysisController(object):
         saida = dict()
         i = 0
         for elm in topics_list:
-            saida[i] = list()
+            saida[i] = dict()
+            saida[i]['tokens'] = list()
             for token in elm:
                 probability = token[0]
                 word = token[1]
-                saida[i].append(dict(
+                token_dict = dict(
                     word=word,
                     probability=probability,
                     frequency=probability*total_status
-                ))
+                )
+                saida[i]['tokens'].append(token_dict)
+
+                # Get category if we didn't find it yet
+                if saida[i].get('category') is None:
+                    saida[i]['category'] = self.crimes_base.get_token_by_name(word)
 
             i += 1
 
@@ -104,6 +110,10 @@ class AnalysisController(object):
                 category = utils.get_category([status['search_term']])
 
             # Update dict with recently found category
+            if category is None:
+                log.error("Category not found for status %s\nSearch term: %s",
+                          status['_metadata']['id_doc'], status['search_term'])
+
             status_locations['results'][i]['category'] = category
             i += 1
 

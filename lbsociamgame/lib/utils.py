@@ -5,9 +5,11 @@ __author__ = 'eduardo'
 import json
 import logging
 from lbsociam.model.corpus import EventsCorpus
+from lbsociam.model.corpus import CategoriesCorpus
 from lbsociam.model.crimes import CrimesBase
 from beaker.cache import cache_region
 from gensim.models import ldamodel
+from gensim import similarities
 
 log = logging.getLogger()
 
@@ -45,40 +47,38 @@ def get_lda(n_topics, corpus):
 
 
 @cache_region('long_term')
-def get_category(tokens, n_topics=4):
+def get_categories_corpus():
+    """
+    Get cached categories corpus
+    :return: CategoriesCorpus object instance
+    """
+    c = CategoriesCorpus()
+    return c
+
+
+@cache_region('long_term')
+def get_index(model, corpus):
+    """
+    Get similarity index for model and corpus
+    :param model: Model to use in similarity, such as LDA os LSI
+    :param corpus: Corpus to be used on queries
+    :return: MatrixSimilarity instance
+    """
+    index = similarities.MatrixSimilarity(model[corpus])
+    return index
+
+
+@cache_region('long_term')
+def get_category(tokens):
     """
     Get category based on supplied tokens list
     :param tokens: Tokens list
-    :param n_topics: Number of topics for LDA
     :return: category dict or None
     """
     crimes_base = CrimesBase()
 
-    # Create LDA
-    c = get_events_corpus()
-    lda = get_lda(n_topics, c)
-    topics_list = lda.show_topics(num_topics=n_topics, formatted=False)
-
-    # Now find out the category for this status
-    vec_bow = c.dic.doc2bow(tokens)
-    vec_lda = lda[vec_bow]
-
-    # Sort by probability
-    vec_lda = sorted(vec_lda, key=lambda item: -item[1])
-
-    # Get topic with highest probability
-    # It will the first element in vector LDA
-    topic = topics_list[vec_lda[0][0]]
-
-    for probability, token_elm in topic:
-        category = crimes_base.get_token_by_name(token_elm, full_search=True)
+    for elm in tokens:
+        category = crimes_base.get_token_by_name(elm)
         if category is not None:
-            # WE just found the category. Return it
-            category['probability'] = probability
-
+            log.debug("Token %s found!", elm)
             return category
-
-    # If we got here, category was not found
-    log.error("Category not found for tokens %s", tokens)
-
-    return None

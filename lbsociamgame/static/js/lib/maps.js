@@ -29,8 +29,10 @@ function initialize(markers) {
                 title: markers[i]['title']
             });
         } else {
-            // Use catregory color
+            // Use category color
             var pinColor = markers[i]['category']['color'];
+            // Remove # from color
+            pinColor = pinColor.replace('#', '')
             var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
                 new google.maps.Size(21, 34),
                 new google.maps.Point(0,0),
