@@ -47,8 +47,8 @@
             <div class="col-md-2">
                 <div class="row">
                     <!-- Tag clouds -->
-                    <div id="load-tagcloud" class="loading"></div>
                     <h4>Tagcloud</h4>
+                    <div id="load-tagcloud" class="loading"></div>
                     <div id="tagcloud"></div>
                 </div>
 
