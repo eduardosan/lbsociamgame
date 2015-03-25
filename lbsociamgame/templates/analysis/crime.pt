@@ -89,23 +89,9 @@
                         success: function(topics){
                             $( '#load-tax' ).hide();
                             //var topics = data;
+
                             // Asynchronously load the template.
-                            var html = '<ul class="list-group">';
-                            for (var i in topics ) {
-                                //alert(topics[i]);
-                                var color = topics[i]['category']['color'];
-                                html += '<li class="list-group-item" style="background-color: ' + color + ';"><h4>'+topics[i]['category']['category_pretty_name']+'</h4>';
-                                html += '<ul class="list-group">';
-                                for (var j = 0; j < topics[i]['tokens'].length ; j++) {
-                                    html += '<li class="list-group-item">';
-                                    html += '<span class="badge">'+parseFloat(topics[i]['tokens'][j]['probability']).toPrecision(3)+'</span>';
-                                    html += topics[i]['tokens'][j]['word'];
-                                    html += '</li>';
-                                }
-                                html += '</ul>';
-                                html += '</li>';
-                            }
-                            html += '</ul>';
+                            var html = loadTopics(topics);
 
                             // Add HTML to taxonomy elm
                             $( '#taxonomy' ).append(html);

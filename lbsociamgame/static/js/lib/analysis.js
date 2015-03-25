@@ -1,6 +1,13 @@
 /**
  * Created by eduardo on 12/02/15.
  */
+/**
+ * Get token categories
+ *
+ * @param token Token to be searched
+ * @param categories Categories list to search
+ * @returns {*}
+ */
 function findTokenCategory(token, categories) {
     for (var i = 0; i < categories.length; i++ ) {
         if (token == categories[i]['default_token']) {
@@ -17,6 +24,11 @@ function findTokenCategory(token, categories) {
     }
 }
 
+/**
+ * Generate status and locations to insert on Google Maps
+ * @param result status list
+ * @returns {Array} Maps markers for google maps
+ */
 function statusLocations(result) {
     var markers = [];
     var evaluation = 0;
@@ -74,6 +86,10 @@ function statusLocations(result) {
     return markers;
 }
 
+/**
+ * Load tagclouds template from hashtags list
+ * @param route_url URL to look for tagclouds
+ */
 function loadTagclouds(route_url) {
     $.ajax({
         type: "GET",
@@ -104,4 +120,31 @@ function loadTagclouds(route_url) {
             $( '#load-tagcloud' ).show();
         }
     });
+}
+
+/**
+ * Create display for supplied topics list
+ * @param topics Topics list
+ * @returns {string} HTML string to include in template
+ */
+function loadTopics(topics) {
+
+    var html = '<ul class="list-group">';
+    for (var i in topics ) {
+        //alert(topics[i]);
+        var color = topics[i]['category']['color'];
+        html += '<li class="list-group-item" style="background-color: ' + color + ';"><h4>'+topics[i]['category']['category_pretty_name']+'</h4>';
+        html += '<ul class="list-group">';
+        for (var j = 0; j < topics[i]['tokens'].length ; j++) {
+            html += '<li class="list-group-item">';
+            html += '<span class="badge">'+parseFloat(topics[i]['tokens'][j]['probability']).toPrecision(3)+'</span>';
+            html += topics[i]['tokens'][j]['word'];
+            html += '</li>';
+        }
+        html += '</ul>';
+        html += '</li>';
+    }
+    html += '</ul>';
+
+    return html;
 }
