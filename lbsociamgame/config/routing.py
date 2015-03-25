@@ -78,3 +78,7 @@ def make_routes(cfg):
     cfg.add_route('twitter_embed', 'embed/twitter/{status_id}')
     cfg.add_view(embed.EmbedController, attr='twitter_embed', route_name='twitter_embed',
                  request_method='GET', renderer='templates/embed/twitter.pt')
+
+    cfg.add_route('crime_hashtags', 'analysis/crime/hashtags')
+    cfg.add_view(analysis.AnalysisController, attr='crime_hashtags', route_name='crime_hashtags',
+                 request_method='GET', renderer='templates/analysis/hashtags.pt')

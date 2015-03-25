@@ -4,6 +4,8 @@ __author__ = 'eduardo'
 
 import logging
 import time
+import json
+import operator
 from lbsociam.model.crimes import CrimesBase
 from lbsociam.model.lbstatus import StatusBase
 from lbsociam.model.dictionary import DictionaryBase
@@ -35,7 +37,6 @@ class AnalysisController(object):
         """
         search_url = self.status_base.lbgenerator_rest_url + self.status_base.lbbase.metadata.name + '/doc'
         terms = self.dic_base.get_token_frequency(limit=20)
-
 
         return {
             'search_url': search_url,
@@ -96,7 +97,6 @@ class AnalysisController(object):
     def crime_locations(self):
         """
         Get crimes with locations included
-        :return:
         """
 
         status_locations = self.status_base.get_locations()
@@ -115,8 +115,42 @@ class AnalysisController(object):
                           status['_metadata']['id_doc'], status['search_term'])
 
             status_locations['results'][i]['category'] = category
+
+            # JSON to dict in source
+            status_locations['results'][i]['source'] = json.loads(status['source'])
+
             i += 1
 
         return {
             'status': status_locations
         }
+
+    def crime_hashtags(self):
+        """
+        Generate hashtag clouds
+        """
+        # Number of elements to be in hashtags by default
+        n = self.request.params.get('n')
+        if n is None:
+            n = 50
+        else:
+            n = int(n)
+
+        log.debug("HASHTAGS: processing starting at %s", time.ctime())
+        status = self.status_base.get_hashtags()
+        hashtags = dict()
+        for elm in status['results']:
+            if elm is not None:
+                for elm_hashtag in elm['hashtags']:
+                    # Calculate hashtag frequency
+                    if hashtags.get(elm_hashtag) is not None:
+                        hashtags[elm_hashtag] += 1
+                    else:
+                        hashtags[elm_hashtag] = 1
+
+        # Ordering results and selecting first 20
+        sorted_tags = dict(sorted(hashtags.items(), key=lambda x: x[1], reverse=True)[:n])
+
+        log.debug("HASHTAGS: processing over at %s", time.ctime())
+
+        return {'hashtags': sorted_tags}

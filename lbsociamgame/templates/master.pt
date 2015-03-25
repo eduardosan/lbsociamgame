@@ -53,6 +53,7 @@
     <script src="${request.static_url('lbsociamgame:static/bootstrap/js/bootstrap.min.js')}"></script>
 
     <script src="${request.static_url('lbsociamgame:static/jquery/js/plugins/NETEYE-activity-indicator-1.0.0/jquery.activity-indicator-1.0.0.min.js')}"></script>
+    <script src="${request.static_url('lbsociamgame:static/jquery/js/plugins/jquery.tagcloud.js/jquery.tagcloud.js')}"></script>
 
      <!-- Bootstrap Form Helpers -->
     <script src="${request.static_url('lbsociamgame:static/bootstrapformhelpers/js/bootstrap-formhelpers.js')}"></script>

@@ -46,6 +46,14 @@
 
             <div class="col-md-2">
                 <div class="row">
+                    <!-- Tag clouds -->
+                    <div id="load-tagcloud" class="loading"></div>
+                    <h4>Tagcloud</h4>
+                    <div id="tagcloud"></div>
+                </div>
+
+                <div class="row">
+                    <h4>Most frequent terms</h4>
                     <!-- Terms frequency matrix -->
                     <ul class="list-group">
                       <li class="list-group-item" tal:repeat="elm terms['results']">
@@ -53,10 +61,6 @@
                         ${elm['token']}
                       </li>
                     </ul>
-                </div>
-
-                <div class="row">
-                    <!-- Tag clouds -->
                 </div>
             </div>
 
@@ -128,62 +132,15 @@
                             $( '#load-maps' ).hide();
                             $( '#status-table').show();
                             //var topics = data;
+
                             // Asynchronously load the maps elements.
-                            var markers = [];
-                            var evaluation = 0;
-                            var html = "";
-
-                            // Get results
-                            var status = result['status'];
-
-                            for (var i = 0; i < status['result_count']; i++ ) {
-                                // Load default data
-                                var title = "Status id " + status['results'][i]['_metadata']['id_doc'];
-                                var embed_url = "/embed/twitter/" + status['results'][i]['_metadata']['id_doc'];
-                                var status_id = status['results'][i]['_metadata']['id_doc'];
-
-                                // Consider only positive status
-                                if (( 'location' in status['results'][i]) && ('positives' in status['results'][i])) {
-                                    if ('negatives' in status['results'][i]) {
-                                        if (status['results'][i]['positives'] > status['results']['negatives']) {
-                                            markers.push({
-                                                'latitude': status['results'][i]['location']['latitude'],
-                                                'longitude': status['results'][i]['location']['longitude'],
-                                                'title': title,
-                                                'embed_url': embed_url,
-                                                'status_id': status_id,
-                                                'category': status['results'][i]['category']
-                                            });
-                                            evaluation = parseInt(status['results'][i]['positives']) - parseInt(status['results']['negatives'])
-                                        }
-                                    } else {
-                                        markers.push({
-                                            'latitude': status['results'][i]['location']['latitude'],
-                                            'longitude': status['results'][i]['location']['longitude'],
-                                            'title': title,
-                                            'embed_url': embed_url,
-                                            'status_id': status_id,
-                                            'category': status['results'][i]['category']
-                                        });
-                                        evaluation = parseInt(status['results'][i]['positives']);
-                                    }
-                                }
-
-                                // Add status visualization
-                                if (i < 10) {
-                                    // Only 10 first status with more positives
-                                    html += "<tr>";
-                                    html += "<td>" + status['results'][i]['inclusion_datetime'] + "</td>";
-                                    html += "<td>" + evaluation.toString() + "</td>";
-                                    html += "<td>" + status['results'][i]['text'] + "</td>";
-                                    html += "<td>" + status['results'][i]['origin'] + "</td>";
-                                    html += "</tr>";
-                                    $( '#status' ).append(html);
-                                }
-                            }
+                            var markers = statusLocations(result);
 
                             // Load Map with all markers
                             initialize(markers);
+
+                            // Now load tagclouds
+                            loadTagclouds("${request.route_url('crime_hashtags')}");
 
                         },
                         error: function(){

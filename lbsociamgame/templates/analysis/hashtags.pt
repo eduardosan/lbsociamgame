@@ -1,0 +1,1 @@
+<a tal:repeat="elm hashtags.keys()" href="analysis/hashtags/${elm}" rel="${hashtags[elm]}" target="_blank">#${elm}</a>
