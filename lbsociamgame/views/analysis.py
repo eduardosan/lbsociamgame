@@ -57,7 +57,7 @@ class AnalysisController(object):
             n_topics = int(n_topics)
 
         t0 = time.clock()
-        c = utils.get_events_corpus()
+        c = utils.get_events_corpus(status_base=self.status_base)
         t1 = time.clock() - t0
         log.debug("Time to generate Corpus: %s seconds", t1)
 

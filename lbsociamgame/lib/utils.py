@@ -25,12 +25,12 @@ def json_load_expression(string):
 
 
 @cache_region('long_term')
-def get_events_corpus():
+def get_events_corpus(status_base):
     """
     Get cached events corpus
     :return: EventsCorpus object instance
     """
-    c = EventsCorpus()
+    c = EventsCorpus(status_base=status_base)
     return c
 
 
@@ -47,12 +47,12 @@ def get_lda(n_topics, corpus):
 
 
 @cache_region('long_term')
-def get_categories_corpus():
+def get_categories_corpus(crimes_base):
     """
     Get cached categories corpus
     :return: CategoriesCorpus object instance
     """
-    c = CategoriesCorpus()
+    c = CategoriesCorpus(crimes_base=crimes_base)
     return c
 
 
