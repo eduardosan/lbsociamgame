@@ -9,6 +9,7 @@ import operator
 from lbsociam.model.crimes import CrimesBase
 from lbsociam.model.lbstatus import StatusBase
 from lbsociam.model.dictionary import DictionaryBase
+from lbsociam.lib import lda
 from requests.exceptions import HTTPError
 from pyramid.response import Response
 from ..lib import utils
@@ -56,41 +57,11 @@ class AnalysisController(object):
         else:
             n_topics = int(n_topics)
 
-        t0 = time.clock()
-        c = utils.get_events_corpus()
-        t1 = time.clock() - t0
-        log.debug("Time to generate Corpus: %s seconds", t1)
-
-        t0 = time.clock()
-        lda = utils.get_lda(n_topics, c)
-        t1 = time.clock() - t0
-        log.debug("Time to generate LDA Model for %s topics: %s seconds", n_topics, t1)
-
-        topics_list = lda.show_topics(num_topics=n_topics, formatted=False)
-        base_info = self.status_base.get_base()
-        total_status = int(base_info['result_count'])
-        # log.debug(topics_list)
-
-        saida = dict()
-        i = 0
-        for elm in topics_list:
-            saida[i] = dict()
-            saida[i]['tokens'] = list()
-            for token in elm:
-                probability = token[0]
-                word = token[1]
-                token_dict = dict(
-                    word=word,
-                    probability=probability,
-                    frequency=probability*total_status
-                )
-                saida[i]['tokens'].append(token_dict)
-
-                # Get category if we didn't find it yet
-                if saida[i].get('category') is None:
-                    saida[i]['category'] = self.crimes_base.get_token_by_name(word)
-
-            i += 1
+        saida = lda.crime_topics(
+            status_base=self.status_base,
+            crimes_base=self.crimes_base,
+            n_topics=n_topics
+        )
 
         return saida
 
