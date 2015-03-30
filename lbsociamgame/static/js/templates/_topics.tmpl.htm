@@ -1,0 +1,7 @@
+<script id="taxonomyTemplate" type="x-jquery-tmpl">
+  <table class="invoice">
+  {{each lineItems}}
+    {{tmpl($value) get_invoiceRowTemplateName(type)}}
+  {{/each}}
+  </table>
+</script>
