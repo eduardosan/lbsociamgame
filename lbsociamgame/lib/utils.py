@@ -7,6 +7,8 @@ import logging
 from lbsociam.model.corpus import EventsCorpus
 from lbsociam.model.corpus import CategoriesCorpus
 from lbsociam.model.crimes import CrimesBase
+from lbsociam.lib import corpus
+from lbsociam.lib import lda
 from beaker.cache import cache_region
 from gensim.models import ldamodel
 from gensim import similarities
@@ -30,20 +32,18 @@ def get_events_corpus(status_base):
     Get cached events corpus
     :return: EventsCorpus object instance
     """
-    c = EventsCorpus(status_base=status_base)
-    return c
+    return corpus.get_events_corpus(status_base)
 
 
 @cache_region('long_term')
-def get_lda(n_topics, corpus):
+def get_lda(n_topics, c):
     """
     Get LDA model
     :param n_topics: Number of topics to use in model
     :param corpus: Corpus object
     :return: LDA model
     """
-    lda = ldamodel.LdaModel(corpus.corpus, id2word=corpus.dic, num_topics=n_topics)
-    return lda
+    return lda.get_lda(c, n_topics)
 
 
 @cache_region('long_term')
