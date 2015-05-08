@@ -57,7 +57,7 @@ class AnalysisController(object):
             n_topics = int(n_topics)
 
         t0 = time.clock()
-        c = utils.get_events_corpus(status_base=self.status_base)
+        c = utils.get_events_corpus(self.status_base)
         t1 = time.clock() - t0
         log.debug("Time to generate Corpus: %s seconds", t1)
 
@@ -154,3 +154,10 @@ class AnalysisController(object):
         log.debug("HASHTAGS: processing over at %s", time.ctime())
 
         return {'hashtags': sorted_tags}
+
+    def crime_hashtag_analysis(self):
+        """
+        Análise da hashtag
+        """
+        hashtag = self.request.matchdict('hashtag')
+        return {}

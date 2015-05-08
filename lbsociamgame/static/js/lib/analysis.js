@@ -99,7 +99,7 @@ function loadTagclouds(route_url) {
         success: function(result){
             $( '#load-tagcloud' ).hide();
 
-            console.log(result);
+            //console.log(result);
 
             $( '#tagcloud' ).append(result);
 
