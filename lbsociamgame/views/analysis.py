@@ -27,8 +27,13 @@ class AnalysisController(object):
         """
         self.request = request
         self.crimes_base = CrimesBase()
-        self.status_base = StatusBase()
-        self.dic_base = DictionaryBase()
+        self.status_base = StatusBase(
+            status_name='status',
+            dic_name='dictionary'
+        )
+        self.dic_base = DictionaryBase(
+            dic_base='dictionary'
+        )
 
     def crime_analysis(self):
         """
@@ -57,7 +62,16 @@ class AnalysisController(object):
             n_topics = int(n_topics)
 
         t0 = time.clock()
-        c = utils.get_events_corpus(self.status_base)
+
+        # Here explicitly load training base
+        training_base_name = self.status_base.status_base
+        training_base_dic = self.dic_base.dictionary_base
+        training_base = StatusBase(
+            status_name=training_base_name,
+            dic_name=training_base_dic
+        )
+
+        c = utils.get_events_corpus(training_base)
         t1 = time.clock() - t0
         log.debug("Time to generate Corpus: %s seconds", t1)
 
