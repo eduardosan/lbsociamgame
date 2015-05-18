@@ -148,3 +148,63 @@ function loadTopics(topics) {
 
     return html;
 }
+
+/**
+ * Generate status and locations to insert on Google Maps
+ * @param result status list
+ * @returns {Array} Maps markers for google maps
+ */
+function statusLocationsAll(result) {
+    var markers = [];
+    var evaluation = 0;
+    var html = "";
+
+    // Get results
+    var status = result['status'];
+
+    for (var i = 0; i < status['result_count']; i++ ) {
+        // Load default data
+        var title = "Status id " + status['results'][i]['_metadata']['id_doc'];
+        var embed_url = "/embed/twitter/" + status['results'][i]['_metadata']['id_doc'];
+        var status_id = status['results'][i]['_metadata']['id_doc'];
+
+        // Consider only positive status
+        if ('negatives' in status['results'][i]) {
+            if (status['results'][i]['positives'] > status['results']['negatives']) {
+                markers.push({
+                    'latitude': status['results'][i]['location']['latitude'],
+                    'longitude': status['results'][i]['location']['longitude'],
+                    'title': title,
+                    'embed_url': embed_url,
+                    'status_id': status_id,
+                    'category': status['results'][i]['category']
+                });
+                evaluation = parseInt(status['results'][i]['positives']) - parseInt(status['results']['negatives'])
+            }
+        } else {
+            markers.push({
+                'latitude': status['results'][i]['location']['latitude'],
+                'longitude': status['results'][i]['location']['longitude'],
+                'title': title,
+                'embed_url': embed_url,
+                'status_id': status_id,
+                'category': status['results'][i]['category']
+            });
+            evaluation = parseInt(status['results'][i]['positives']);
+        }
+
+        // Add status visualization
+        if (i < 10) {
+            // Only 10 first status with more positives
+            html += "<tr>";
+            html += "<td>" + status['results'][i]['inclusion_datetime'] + "</td>";
+            html += "<td>" + evaluation.toString() + "</td>";
+            html += "<td>" + status['results'][i]['text'] + "</td>";
+            html += "<td>" + status['results'][i]['origin'] + "</td>";
+            html += "</tr>";
+            $( '#status' ).append(html);
+        }
+    }
+
+    return markers;
+}

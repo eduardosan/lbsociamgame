@@ -120,7 +120,7 @@
                             //var topics = data;
 
                             // Asynchronously load the maps elements.
-                            var markers = statusLocationsAll(result);
+                            var markers = statusLocations(result);
 
                             // Load Map with all markers
                             initialize(markers);

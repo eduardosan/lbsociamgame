@@ -21,7 +21,10 @@ function initialize(markers) {
         );
 
         // Change marker color
-        if (markers[i]['category'] == 'undefined') {
+        if (markers[i]['category'] == undefined
+            || markers[i]['category'] == null
+            || markers[i]['category'].length == 0) {
+
             // Generate default Pin
             var mk = new google.maps.Marker({
                 position: myLatlng,

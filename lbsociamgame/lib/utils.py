@@ -82,3 +82,36 @@ def get_category(tokens):
         if category is not None:
             log.debug("Token %s found!", elm)
             return category
+
+
+@cache_region('log_term')
+def get_category_id(id_doc):
+    """
+    Get category metadata for the supplied ID
+
+    :param id_doc: ID for the category to use
+    :return: Category metadata as dict
+    """
+    crimes_base = CrimesBase()
+    category = crimes_base.get_document(id_doc)
+
+    return category
+
+@cache_region('log_term')
+def get_category_lda(status,
+                     status_base):
+    """
+    Get Category for status using LDA model
+    :param status: Status dict to be analyzed
+    :param status_base: Status base to consider
+    :return: Status dict
+    """
+
+    crimes_base = CrimesBase()
+    status = lda.get_category(
+        status,
+        status_base,
+        crimes_base
+    )
+
+    return status

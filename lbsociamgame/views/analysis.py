@@ -81,7 +81,7 @@ class AnalysisController(object):
         log.debug("Time to generate LDA Model for %s topics: %s seconds", n_topics, t1)
 
         topics_list = lda.show_topics(num_topics=n_topics, formatted=False)
-        base_info = self.status_base.get_base()
+        base_info = training_base.get_base()
         total_status = int(base_info['result_count'])
         # log.debug(topics_list)
 
@@ -115,11 +115,21 @@ class AnalysisController(object):
 
         status_locations = self.status_base.get_locations()
 
+        # Get training base
+        training_base_name = self.status_base.status_base
+        training_base_dic = self.dic_base.dictionary_base
+        training_base = StatusBase(
+            status_name=training_base_name,
+            dic_name=training_base_dic
+        )
+
         # Now find category
         i = 0
         for status in status_locations['results']:
-            if status.get('events_tokens'):
-                category = utils.get_category(status['events_tokens'])
+            if status.get('category') is not None:
+                category = utils.get_category_id(status['category']['category_id_doc'])
+            elif status.get('events_tokens') is not None:
+                category = utils.get_category_lda(status, training_base)
             else:
                 category = utils.get_category([status['search_term']])
 
