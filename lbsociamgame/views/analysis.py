@@ -9,14 +9,16 @@ import operator
 from lbsociam.model.crimes import CrimesBase
 from lbsociam.model.lbstatus import StatusBase
 from lbsociam.model.dictionary import DictionaryBase
+from lbsociam.lib import lda
 from requests.exceptions import HTTPError
 from pyramid.response import Response
 from ..lib import utils
+from ..model.request import LBRequest
 
 log = logging.getLogger()
 
 
-class AnalysisController(object):
+class AnalysisController(LBRequest):
     """
     Abalysis controller page
     """
@@ -25,15 +27,8 @@ class AnalysisController(object):
         View constructor for analysis
         :param request: Pyramid request
         """
+        super(AnalysisController, self).__init__()
         self.request = request
-        self.crimes_base = CrimesBase()
-        self.status_base = StatusBase(
-            status_name='status',
-            dic_name='dictionary'
-        )
-        self.dic_base = DictionaryBase(
-            dic_base='dictionary'
-        )
 
     def crime_analysis(self):
         """
@@ -61,50 +56,12 @@ class AnalysisController(object):
         else:
             n_topics = int(n_topics)
 
-        t0 = time.clock()
-
         # Here explicitly load training base
-        training_base_name = self.status_base.status_base
-        training_base_dic = self.dic_base.dictionary_base
-        training_base = StatusBase(
-            status_name=training_base_name,
-            dic_name=training_base_dic
+        saida = lda.crime_topics(
+            self.training_base,
+            self.crimes_base,
+            n_topics
         )
-
-        c = utils.get_events_corpus(training_base)
-        t1 = time.clock() - t0
-        log.debug("Time to generate Corpus: %s seconds", t1)
-
-        t0 = time.clock()
-        lda = utils.get_lda(n_topics, c)
-        t1 = time.clock() - t0
-        log.debug("Time to generate LDA Model for %s topics: %s seconds", n_topics, t1)
-
-        topics_list = lda.show_topics(num_topics=n_topics, formatted=False)
-        base_info = training_base.get_base()
-        total_status = int(base_info['result_count'])
-        # log.debug(topics_list)
-
-        saida = dict()
-        i = 0
-        for elm in topics_list:
-            saida[i] = dict()
-            saida[i]['tokens'] = list()
-            for token in elm:
-                probability = token[0]
-                word = token[1]
-                token_dict = dict(
-                    word=word,
-                    probability=probability,
-                    frequency=probability*total_status
-                )
-                saida[i]['tokens'].append(token_dict)
-
-                # Get category if we didn't find it yet
-                if saida[i].get('category') is None:
-                    saida[i]['category'] = self.crimes_base.get_token_by_name(word)
-
-            i += 1
 
         return saida
 
@@ -116,12 +73,7 @@ class AnalysisController(object):
         status_locations = self.status_base.get_locations()
 
         # Get training base
-        training_base_name = self.status_base.status_base
-        training_base_dic = self.dic_base.dictionary_base
-        training_base = StatusBase(
-            status_name=training_base_name,
-            dic_name=training_base_dic
-        )
+        training_base = self.training_base
 
         # Now find category
         i = 0

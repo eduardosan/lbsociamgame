@@ -18,11 +18,12 @@ from liblightbase.lbutils import conv
 from liblightbase.lbtypes import extended
 from requests.exceptions import HTTPError
 from ..lib import utils
+from ..model.request import LBRequest
 
 log = logging.getLogger()
 
 
-class StatusController(object):
+class StatusController(LBRequest):
     """
     Crime controller
     """
@@ -31,9 +32,8 @@ class StatusController(object):
         View constructor for crimes
         :param request: Pyramid request
         """
+        super(StatusController, self).__init__()
         self.request = request
-        self.crimes_base = CrimesBase()
-        self.status_base = StatusBase()
 
     def status_class(self):
         """

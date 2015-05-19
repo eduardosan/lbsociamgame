@@ -15,11 +15,12 @@ from lbsociam.model.crimes import Crimes, CrimesBase
 from liblightbase.lbutils import conv
 from liblightbase.lbtypes import extended
 from ..lib import utils
+from ..model.request import LBRequest
 
 log = logging.getLogger()
 
 
-class CrimeController(object):
+class CrimeController(LBRequest):
     """
     Crime controller
     """
@@ -28,8 +29,8 @@ class CrimeController(object):
         View constructor for crimes
         :param request: Pyramid request
         """
+        super(CrimeController, self).__init__()
         self.request = request
-        self.crimes_base = CrimesBase()
 
     def crime_add(self):
         """

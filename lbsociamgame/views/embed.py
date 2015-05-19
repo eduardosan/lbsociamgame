@@ -16,11 +16,12 @@ from pyramid.response import Response
 from liblightbase.lbutils import conv
 from pyramid.exceptions import HTTPBadRequest
 from ..lib import utils
+from ..model.request import LBRequest
 
 log = logging.getLogger()
 
 
-class EmbedController(object):
+class EmbedController(LBRequest):
     """
     Abalysis controller page
     """
@@ -29,11 +30,8 @@ class EmbedController(object):
         View constructor for analysis
         :param request: Pyramid request
         """
+        super(EmbedController, self).__init__()
         self.request = request
-        self.crimes_base = CrimesBase()
-        self.status_base = StatusBase()
-        self.dic_base = DictionaryBase()
-        self.lbt = Twitter()
 
     def twitter_embed(self):
         """
