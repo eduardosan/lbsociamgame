@@ -105,3 +105,22 @@ function getHtml(status, infowindow) {
         }
     });
 }
+
+function estados(source) {
+    // Center map in Brasilia
+    var mapOptions = {
+        zoom: 6,
+        center: new google.maps.LatLng(-15.4647, -47.5547),
+        mapTypeId: google.maps.MapTypeId.HYBRID
+    };
+
+    var map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+
+    // Load Data as GeoJson
+    map.data.loadGeoJson(source);
+
+    // Delete loading element
+    var elm = document.getElementById('load-maps');
+    elm.hide();
+
+}

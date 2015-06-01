@@ -1,0 +1,56 @@
+<metal:main use-macro="load: ../master.pt">
+
+    <metal:content fill-slot="title">Brasil Map</metal:content>
+
+    <metal:content fill-slot="breadcrumbs">
+        <li class="active">Estados Maps</li>
+    </metal:content>
+
+    <metal:content fill-slot="content">
+
+        <div class="row" id="analysis">
+
+            <div class="col-md-12">
+                <div class="row">
+                    <!-- Map with status on the country -->
+                    <div id="map_canvas" style="height: 500px; width: 100%;"></div>
+                </div>
+
+                <div class="row">
+                    <!-- Document list -->
+                    <table class="table-bordered" id="status-table" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">Date</th>
+                                <th style="width: 5%;">+/-</th>
+                                <th style="width: 75%;">Status</th>
+                                <th style="width: 10%;">Origin</th>
+                            </tr>
+                        </thead>
+                        <tbody id="status">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </metal:content>
+
+    <metal:content fill-slot="javascript">
+
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=${key}&sensor=true&region=BR"></script>
+        <script src="${request.static_url('lbsociamgame:static/js/lib/maps.js')}"></script>
+
+        <script type="text/javascript">
+
+            $(function() {
+                $(document).ready(function(){
+                    // Load maps
+                    estados("${request.route_url('get_estados')}");
+                });
+            });
+        </script>
+    </metal:content>
+
+</metal:main>

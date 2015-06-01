@@ -106,7 +106,7 @@ function loadTagclouds(route_url) {
             // Tagcloud configuration
             $.fn.tagcloud.defaults = {
               size: {start: 8, end: 12, unit: 'pt'},
-              color: {start: '#cde', end: '#f52'}
+              color: {start: '#000000', end: '#920204'}
             };
 
             $( '#tagcloud a').tagcloud();

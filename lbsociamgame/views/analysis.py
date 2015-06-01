@@ -137,3 +137,10 @@ class AnalysisController(LBRequest):
         """
         hashtag = self.request.matchdict('hashtag')
         return {}
+
+    def crime_periods(self):
+        """
+        Hashtags list for the period
+        """
+
+        return {}
