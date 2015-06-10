@@ -1,5 +1,6 @@
 #!/usr/env python
 # -*- coding: utf-8 -*-
+import plotly
 from pyramid.config import Configurator
 from pyramid.session import SignedCookieSessionFactory
 from lbsociamgame import config as cfg
@@ -21,6 +22,12 @@ def main(global_config, **settings):
     config.include('pyramid_beaker')
     my_session_factory = SignedCookieSessionFactory(settings['session.secret'])
     config.set_session_factory(my_session_factory)
+
+    # Get plotly credentials
+    plotly.tools.set_credentials_file(
+        username=settings['plotly_username'],
+        api_key=settings['plotly_key']
+    )
 
     # Import routes
     from lbsociamgame.config import routing

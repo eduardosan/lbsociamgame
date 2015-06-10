@@ -18,11 +18,12 @@ requires = [
     'liblightbase',
     'LBSociam',
     'pyramid_simpleform',
-    'pyramid_beaker'
+    'pyramid_beaker',
+    'plotly'
 ]
 
 setup(name='lbsociamgame',
-      version='0.1',
+      version='0.5',
       description='lbsociamgame',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[

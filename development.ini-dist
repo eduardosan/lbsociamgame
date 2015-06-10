@@ -20,6 +20,10 @@ debugtoolbar.button_style = top:10px;
 rest_url = http://localhost/api
 geo_url = http://localhost/geo
 
+# Plotly API Key
+plotly_key =
+plotly_username =
+
 # By default, the toolbar only appears for clients from IP addresses
 # '127.0.0.1' and '::1'.
 # debugtoolbar.hosts = 127.0.0.1 ::1

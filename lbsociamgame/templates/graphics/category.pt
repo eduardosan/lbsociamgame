@@ -1,0 +1,1 @@
+<iframe src="${graph_url}" id="category-${category_id_doc}" width="900" height="450" seamless="seamless" scrolling="no"></iframe>

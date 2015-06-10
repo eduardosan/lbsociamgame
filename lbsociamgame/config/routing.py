@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'eduardo'
 
-from lbsociamgame.views import crime, status, analysis, embed, maps
+from lbsociamgame.views import crime, status, analysis, embed, maps, graphics
 
 
 def make_routes(cfg):
@@ -99,3 +99,12 @@ def make_routes(cfg):
     cfg.add_route('get_estados', 'maps/estados/get')
     cfg.add_view(maps.MapsController, attr='get_estados', route_name='get_estados',
                  request_method='GET', renderer='json')
+
+    # Graphics
+    cfg.add_route('category', 'graphics/category/{id_doc}')
+    cfg.add_view(graphics.GraphicsController, attr='category',
+                 route_name='category', renderer='templates/graphics/category.pt')
+
+    cfg.add_route('category_list', 'graphics/category')
+    cfg.add_view(graphics.GraphicsController, attr='category_list',
+                 route_name='category_list', renderer='templates/graphics/category_list.pt')
