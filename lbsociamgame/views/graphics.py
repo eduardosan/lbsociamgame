@@ -154,3 +154,77 @@ class GraphicsController(LBRequest):
             'graph_url': plot_url,
             'graph_id': filename
         }
+
+    def states(self):
+        """
+        Generate graphics for states
+        """
+        start_date = self.request.params.get('start_date')
+        end_date = self.request.params.get('end_date')
+
+        # Get starting date
+        if start_date is None:
+            return Response("Start date mandatory", status=500)
+        else:
+            start_date_obj = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+
+        # Get end date
+        if end_date is None:
+            end_date_obj = datetime.datetime.now()
+            end_date = end_date_obj.strftime("%Y-%m-%d")
+        else:
+            end_date_obj = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+
+        analysis = self.analytics_base.get_state_analysis(
+            start_date=start_date_obj,
+            end_date=end_date_obj
+        )
+
+        # Brasil states list
+        uf_list = sorted(["GO", "MT", "MS", "DF", "AM", "AC", "RO",
+                   "RR", "AP", "TO", "PA", "MA", "PI", "CE",
+                   "RN", "PB", "PE", "SE", "AL", "BA", "SP",
+                   "MG", "RJ", "ES", "PR", "SC", "RS"])
+
+        # Now create graph for all states
+        trace_list = list()
+        for category_id_doc in sorted(analysis.keys()):
+            if category_id_doc == 'total_status':
+                continue
+
+            category = self.crimes_base.get_document(category_id_doc)
+
+            bary = list()
+            for uf in uf_list:
+                if analysis[category_id_doc].get(uf) is None:
+                    bary.append(0)
+                else:
+                    # Add these to the bar
+                    bary.append(analysis[category_id_doc][uf])
+
+            # Create trace bar to add to the graph
+            trace = Bar(
+                x=uf_list,
+                y=bary,
+                name=category['category_pretty_name']
+            )
+            trace_list.append(trace)
+
+        # Ploth graph bar with title
+        data = Data(trace_list)
+        layout = Layout(
+            barmode='stack',
+            title="""Crimes identificados por estado entre %s e %s. Total: %s encontrados""" % (
+                start_date,
+                end_date,
+                analysis['total_status']
+            )
+        )
+        fig = Figure(data=data, layout=layout)
+        filename = """states-between-%s-and-%s""" % (start_date, end_date)
+        plot_url = py.plot(fig, filename=filename)
+
+        return {
+            'graph_url': plot_url,
+            'graph_id': filename
+        }

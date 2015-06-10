@@ -4,6 +4,7 @@ from lbsociam.model.crimes import CrimesBase
 from lbsociam.model.lbstatus import StatusBase
 from lbsociam.model.dictionary import DictionaryBase
 from lbsociam.model.lbtwitter import Twitter
+from lbsociam.model.analytics import AnalyticsBase
 from ..model.estados import Estados
 
 class LBRequest(object):
@@ -26,3 +27,4 @@ class LBRequest(object):
         self.lbt = Twitter()
         self.training_base = StatusBase()
         self.estados = Estados()
+        self.analytics_base = AnalyticsBase()

@@ -1,0 +1,1 @@
+<iframe src="${graph_url}" id="${graph_id}" width="900" height="450" seamless="seamless" scrolling="no"></iframe>

@@ -108,3 +108,7 @@ def make_routes(cfg):
     cfg.add_route('category_list', 'graphics/category')
     cfg.add_view(graphics.GraphicsController, attr='category_list',
                  route_name='category_list', renderer='templates/graphics/category_list.pt')
+
+    cfg.add_route('states', 'graphics/states')
+    cfg.add_view(graphics.GraphicsController, attr='states',
+                 route_name='states', renderer='templates/graphics/states.pt')
