@@ -148,7 +148,7 @@ class GraphicsController(LBRequest):
 
         filename = "category-" + start_date + "-" + end_date
         fig = Figure(data=data, layout=layout)
-        plot_url = py.plot(fig, filename=filename)
+        plot_url = py.plot(fig, filename=filename, auto_open=False)
 
         return {
             'graph_url': plot_url,
@@ -222,7 +222,7 @@ class GraphicsController(LBRequest):
         )
         fig = Figure(data=data, layout=layout)
         filename = """states-between-%s-and-%s""" % (start_date, end_date)
-        plot_url = py.plot(fig, filename=filename)
+        plot_url = py.plot(fig, filename=filename, auto_open=False)
 
         return {
             'graph_url': plot_url,
