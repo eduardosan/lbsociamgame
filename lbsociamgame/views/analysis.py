@@ -291,4 +291,7 @@ class AnalysisController(LBRequest):
         """
         Create analysis
         """
-        return {}
+        # Get last 10 analysis and show it on the interface
+        analytics = self.analytics_base.get_analysis(limit=10)
+
+        return analytics

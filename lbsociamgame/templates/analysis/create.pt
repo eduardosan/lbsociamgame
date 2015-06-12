@@ -11,6 +11,8 @@
 
     <metal:content fill-slot="content">
 
+        <h2>Análise de Informações Criminais</h2>
+
         <div class="row">
            <div class="col-md-12">
 
@@ -45,6 +47,59 @@
                           <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading state...
                         </button>
                       </form>
+                  </div>
+              </div>
+
+           </div>
+        </div>
+
+        <div class="row">
+           <div class="col-md-12">
+
+               <div class="panel panel-default">
+                  <!-- Default panel contents -->
+                  <div class="panel-heading">Últimas 10 análises cadastradas</div>
+                  <div class="panel-body">
+                    <p style="color: #000000;">Se preferir, acesse uma das últimas 10 análises cadastradas</p>
+
+                      <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Data de início</th>
+                                <th>Data de fim</th>
+                                <th>Total de Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr tal:repeat="analytics results">
+                                <?python
+                                        import datetime
+                                        start = datetime.datetime.strptime(analytics['analysis_date'], "%d/%m/%Y %H:%M:%S").strftime("%Y-%m-%d")
+                                        end = datetime.datetime.strptime(analytics['analysis_end_date'], "%d/%m/%Y %H:%M:%S").strftime("%Y-%m-%d")
+                                  ?>
+                                <td>${analytics.get('_metadata').get('id_doc')}</td>
+                                <td>${analytics.get('analysis_date')}</td>
+                                <td>${analytics.get('analysis_end_date')}</td>
+                                <td>${analytics.get('total_status')}</td>
+                                <td>
+                                    <a class="btn btn-default" title="Acessar análise genérica" role="button" href="${request.route_url('crime_periods')}?id_doc=${analytics.get('_metadata').get('id_doc')}" target="_blank">
+                                        <i class="glyphicon glyphicon-search"></i>
+                                        Acessar Análise »
+                                    </a>
+                                    <a class="btn btn-default" title="Acessar o mapa da criminalidade" role="button" href="${request.route_url('crime_analysis')}?start=${start}&end=${end}" target="_blank">
+                                        <i class="glyphicon glyphicon-search"></i>
+                                        Mapa de Criminalidade »
+                                    </a>
+
+                                </td>
+                            </tr>
+
+                        </tbody>
+                      </table>
+
                   </div>
               </div>
 
