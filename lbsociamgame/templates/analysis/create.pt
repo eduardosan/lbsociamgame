@@ -44,7 +44,7 @@
                             Dados e Gráficos
                         </button>
                         <button type="button" class="btn btn-warning" id="create-loading" style="display: none;">
-                          <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading state...
+                          <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading data...
                         </button>
                       </form>
                   </div>
@@ -157,6 +157,8 @@
                                 loading.hide();
                             },
                             error: function(){
+                                $( '#create-analysis' ).show();
+                                $( '#create-loading' ).hide();
                                 alert("Falha na criação da análise");
                             }
                         });

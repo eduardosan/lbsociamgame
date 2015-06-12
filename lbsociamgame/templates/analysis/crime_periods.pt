@@ -3,7 +3,10 @@
     <metal:content fill-slot="title">Violence and criminality analysis</metal:content>
 
     <metal:content fill-slot="breadcrumbs">
-        <li class="active">Crime Analysis</li>
+        <li><a href="${request.route_url('home')}">Home</a></li>
+        <li><a href="${request.route_url('crimes')}">Categorias</a></li>
+        <li class="active"><a href="${request.route_url('create_analysis')}">Análises</a></li>
+        <li><a href="${request.route_url('status_bulk')}">Classificação</a></li>
     </metal:content>
 
     <metal:content fill-slot="content">
