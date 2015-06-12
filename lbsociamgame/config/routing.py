@@ -62,6 +62,11 @@ def make_routes(cfg):
     cfg.add_view(status.StatusController, attr='status_down', route_name='status_down',
                  request_method='POST')
 
+    # Analysis creation
+    cfg.add_route('create_analysis', 'analysis')
+    cfg.add_view(analysis.AnalysisController, attr='create_analysis',
+                 route_name='create_analysis', renderer='templates/analysis/create.pt')
+
     # Violence and criminality
     cfg.add_route('crime_analysis', 'analysis/crime')
     cfg.add_view(analysis.AnalysisController, attr='crime_analysis',
@@ -87,9 +92,13 @@ def make_routes(cfg):
     cfg.add_view(analysis.AnalysisController, attr='crime_hashtag_analysis', route_name='crime_hashtag_analysis',
                  request_method='GET', renderer='templates/analysis/hashtag_analysis.pt')
 
-    cfg.add_route('crime_periods', 'analysis/crime/periods/{id_doc}')
-    cfg.add_view(analysis.AnalysisController, attr='crime_periods',
-                 route_name='crime_periods', renderer='templates/analysis/crime_periods.pt')
+    cfg.add_route('crime_periods', 'analysis/crime/periods')
+    cfg.add_view(analysis.AnalysisController, attr='crime_periods', route_name='crime_periods',
+                 request_method='GET', renderer='templates/analysis/crime_periods.pt')
+
+    cfg.add_route('crime_periods_create', 'analysis/crime/periods/new')
+    cfg.add_view(analysis.AnalysisController, attr='crime_periods_create',
+                 route_name='crime_periods_create', renderer='json')
 
     # States map
     cfg.add_route('maps_estados', 'maps/estados')

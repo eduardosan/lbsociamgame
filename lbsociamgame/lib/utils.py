@@ -84,7 +84,7 @@ def get_category(tokens):
             return category
 
 
-@cache_region('log_term')
+@cache_region('long_term')
 def get_category_id(id_doc):
     """
     Get category metadata for the supplied ID
@@ -97,7 +97,7 @@ def get_category_id(id_doc):
 
     return category
 
-@cache_region('log_term')
+@cache_region('long_term')
 def get_category_lda(status,
                      status_base):
     """
@@ -115,3 +115,23 @@ def get_category_lda(status,
     )
 
     return status
+
+@cache_region('long_term')
+def create_analysis(analytics_base,
+                    start_date,
+                    end_date,
+                    offset):
+    """
+    Create analysis for the supplied parameters
+    :param analytics_base: AnalyticsBase instance
+    :param start_date: Start date as datetime object
+    :param end_date: End date as datetime object
+    :param offset: Status offset
+    :return: id_doc for the created analysis
+    """
+    id_doc = analytics_base.create_analysis_categories(
+        start_date,
+        end_date,
+        offset
+    )
+    return id_doc

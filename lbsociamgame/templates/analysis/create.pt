@@ -1,0 +1,115 @@
+<metal:main use-macro="load: ../master.pt">
+
+    <metal:content fill-slot="title">Criação da análise</metal:content>
+
+    <metal:content fill-slot="breadcrumbs">
+        <li><a href="${request.route_url('home')}">Home</a></li>
+        <li><a href="${request.route_url('crimes')}">Categorias</a></li>
+        <li class="active"><a href="${request.route_url('create_analysis')}">Análises</a></li>
+        <li><a href="${request.route_url('status_bulk')}">Classificação</a></li>
+    </metal:content>
+
+    <metal:content fill-slot="content">
+
+        <div class="row">
+           <div class="col-md-12">
+
+               <div class="panel panel-default">
+                  <!-- Default panel contents -->
+                  <div class="panel-heading">Criação de análise</div>
+                  <div class="panel-body">
+                    <p style="color: #000000;">Selecione um período para geração da análise</p>
+                      <form action="${request.route_url('crime_periods_create')}" method="GET">
+                        <div class="form-group" style="width: 250px;">
+                            <label for="start">Start date</label>
+                            <div class='input-group date' id='datetimepicker'>
+                                <input type='text' class="form-control" name="start" id="start"/>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                          <div class="form-group" style="width: 250px;">
+                            <label for="end">End date</label>
+                            <div class='input-group date' id='datetimepicker2'>
+                                <input type='text' class="form-control" name="end" id="end"/>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="create-analysis">
+                            Dados e Gráficos
+                        </button>
+                        <button type="button" class="btn btn-warning" id="create-loading" style="display: none;">
+                          <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading state...
+                        </button>
+                      </form>
+                  </div>
+              </div>
+
+           </div>
+        </div>
+
+
+
+    </metal:content>
+
+    <metal:content fill-slot="javascript">
+
+        <script src="${request.static_url('lbsociamgame:static/js/lib/analysis.js')}"></script>
+
+        <script type="text/javascript">
+
+            $(function() {
+
+                $(document).ready(function(){
+
+                    $('#datetimepicker').datetimepicker({
+                        format: 'YYYY-MM-DD'
+                    });
+
+                    $('#datetimepicker2').datetimepicker({
+                        format: 'YYYY-MM-DD'
+                    });
+
+                    $('#create-analysis').click(function(){
+
+                        $( '#create-analysis' ).hide();
+                        $( '#create-loading' ).show();
+                        var formData = new FormData($('form')[0]);
+                        $.ajax({
+                            type: "POST",
+                            url: "${request.route_url('crime_periods_create')}",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(result){
+                                // Add analysis button
+                                var url = "${request.route_url('crime_periods')}?id_doc=" + result.id_doc;
+                                var html = '<a role="button" href="' + url + '" class="btn btn-primary" title="Acessar Análise" target="_blank>';
+                                html += 'Acessar análise »';
+                                html += '</a>';
+                                var loading = $( '#create-loading' );
+                                loading.append(html);
+
+                                // Add map button
+                                url = "${request.route_url('crime_analysis')}?start=" + result.start_date + "&end=" + result.end_date;
+                                html = '<a role="button" href="' + url + '" class="btn btn-primary" title="Acessar Análise" target="_blank>';
+                                html += 'Mapa de criminalidade »';
+                                html += '</a>';
+                                loading.append(html);
+                                loading.hide();
+                            },
+                            error: function(){
+                                alert("Falha na criação da análise");
+                            }
+                        });
+                    });
+
+                });
+            });
+        </script>
+    </metal:content>
+
+</metal:main>

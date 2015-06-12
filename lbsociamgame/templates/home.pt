@@ -25,10 +25,10 @@
                 </a></p>
             </div>
             <div class="col-md-4">
-              <h2>Mapa do Brasil</h2>
-                <p>Mapa dos eventos relacionados à criminalidade no Estado Brasileiro obtidos através da extração dos dados oriundos de redes sociais</p>
-                <p><a role="button" href="${request.route_url('crime_analysis')}" class="btn btn-primary" title="Mapa dos crimes no Brasil">
-                    Mapa do Brasil »
+              <h2>Análise de Eventos</h2>
+                <p>Análise dos eventos relacionados à criminalidade no Estado Brasileiro obtidos através da extração dos dados oriundos de redes sociais</p>
+                <p><a role="button" href="${request.route_url('create_analysis')}" class="btn btn-primary" title="Mapa dos crimes no Brasil">
+                    Criar análise »
                 </a></p>
             </div>
             <div class="col-md-4">

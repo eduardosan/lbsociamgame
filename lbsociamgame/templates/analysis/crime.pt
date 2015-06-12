@@ -20,10 +20,15 @@
                   <div class="panel-body">
                     <p style="color: #000000;">O gráfico apresenta informações de dados extraídos nas redes sociais entre os dias <b>${start_date}</b> e <b>${end_date}</b></p>
                     <p>O botão abaixo apresenta alguns detalhamentos e gráficos sobre os dados apresentados no mapa.</p>
-                    <form action="${request.route_url('crime_periods')}" method="GET" target="_blank">
+                    <form action="${request.route_url('crime_periods_create')}" method="GET" target="_blank">
                         <input type="hidden" name="start" id="start_date" value="${start_date}">
                         <input type="hidden" name="end" id="end_date" value="${end_date}">
-                        <button type="submit" class="btn btn-primary">Dados e Gráficos</button>
+                        <button type="submit" class="btn btn-primary" id="create-analysis">
+                            Dados e Gráficos
+                        </button>
+                        <button type="button" data-loading-text="Loading..." class="btn btn-primary" id="create-loading" style="display: none;">
+                          Loading state
+                        </button>
                     </form>
                   </div>
               </div>
@@ -108,6 +113,31 @@
                         "start": "${start_date}",
                         "end": "${end_date}"
                     };
+
+                    $('#create-analysis').click(function(){
+                        $( '#create-analysis' ).hide();
+                        $( '#create-loading' ).show();
+                        var formData = new FormData($('form')[0]);
+                        $.ajax({
+                            type: "POST",
+                            url: "${request.route_url('crime_periods_create')}",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(result){
+                                var url = "${request.route_url('crime_periods')}/" + string(result.id_doc);
+                                var html='<a role="button" href="' + url + '" class="btn btn-primary" title="Acessar Análise" target="_blank>';
+                                html += 'Acessar análise »';
+                                html += '</a>';
+                                var loading = $( '#create-loading' );
+                                loading.append(html);
+                                loading.hide();
+                            },
+                            error: function(){
+                                alert("Falha na criação da análise");
+                            }
+                        });
+                    });
 
                     $.ajax({
                         type: "GET",

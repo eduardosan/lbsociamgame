@@ -27,4 +27,6 @@ class LBRequest(object):
         self.lbt = Twitter()
         self.training_base = StatusBase()
         self.estados = Estados()
-        self.analytics_base = AnalyticsBase()
+        self.analytics_base = AnalyticsBase(
+            self.status_base
+        )

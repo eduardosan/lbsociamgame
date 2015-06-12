@@ -195,11 +195,54 @@ class AnalysisController(LBRequest):
         hashtag = self.request.matchdict('hashtag')
         return {}
 
+    def crime_periods_create(self):
+        """
+        Create cirm periods
+        """
+        # Get date filters
+        start_date = self.request.params.get('start')
+        end_date = self.request.params.get('end')
+        offset = self.request.params.get('offset')
+        if offset is None:
+            offset = 0
+        else:
+            offset = int(offset)
+
+        # Get starting date
+        if start_date is None:
+            return Response("Start date mandatory", status=500)
+        else:
+            start_date_obj = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+
+        # Get end date
+        if end_date is None:
+            end_date_obj = datetime.datetime.now()
+            end_date = end_date_obj.strftime("%Y-%m-%d")
+        else:
+            end_date_obj = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+
+        # Return created analysis
+        id_doc = utils.create_analysis(
+            self.analytics_base,
+            start_date_obj,
+            end_date_obj,
+            offset
+        )
+
+        return {
+            'id_doc': id_doc,
+            'start_date': start_date,
+            'end_date': end_date
+        }
+
     def crime_periods(self):
         """
         Hashtags list for the period
         """
-        id_doc = self.request.matchdict.get('id_doc')
+        id_doc = self.request.params.get('id_doc')
+        if id_doc is None:
+            return Response("id_doc is mandatory")
+
         analytics = self.analytics_base.get_document(id_doc)
 
         # Get date filters
@@ -243,3 +286,9 @@ class AnalysisController(LBRequest):
             'topics': topics,
             'terms': terms
         }
+
+    def create_analysis(self):
+        """
+        Create analysis
+        """
+        return {}

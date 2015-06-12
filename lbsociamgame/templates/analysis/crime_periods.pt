@@ -16,6 +16,9 @@
                   <div class="panel-heading">Coleta de informações entre ${start_date} e ${end_date}</div>
                   <div class="panel-body">
                     <p style="color: #000000;">Os dados foram extraídos das redes sociais entre os dias <b>${start_date}</b> e <b>${end_date}</b></p>
+                    <p><a role="button" href="${request.route_url('crime_analysis')}?start=${start_date}&end=${end_date}" class="btn btn-primary" title="Acesse a análise espacial" target="_blank">
+                        Mapa de criminalidade »
+                    </a></p>
                   </div>
               </div>
 
