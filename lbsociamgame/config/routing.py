@@ -87,7 +87,7 @@ def make_routes(cfg):
     cfg.add_view(analysis.AnalysisController, attr='crime_hashtag_analysis', route_name='crime_hashtag_analysis',
                  request_method='GET', renderer='templates/analysis/hashtag_analysis.pt')
 
-    cfg.add_route('crime_periods', 'analysis/crime/periods')
+    cfg.add_route('crime_periods', 'analysis/crime/periods/{id_doc}')
     cfg.add_view(analysis.AnalysisController, attr='crime_periods',
                  route_name='crime_periods', renderer='templates/analysis/crime_periods.pt')
 

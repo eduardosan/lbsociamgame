@@ -37,13 +37,39 @@
 
     <div class="starter-template">
       <div class="container-fluid">
-          <ol class="breadcrumb">
-              <li><a href="${request.route_url('home')}">Home</a></li>
-              <metal:content define-slot="breadcrumbs" />
-          </ol>
-          <metal:content define-slot="content" />
+
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a href="${request.route_url('home')}" class="navbar-brand">LBSociam</a>
+            </div>
+            <div class="navbar-collapse collapse" id="navbar">
+              <ul class="nav navbar-nav">
+                <metal:content define-slot="breadcrumbs" />
+              </ul>
+            </div><!--/.nav-collapse -->
+          </div><!--/.container-fluid -->
+        </nav>
+
+
+        <metal:content define-slot="content" />
+
       </div>
     </div>
+
+    <hr>
+    <footer>
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
+            <img alt="Licença Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" />
+        </a>
+        <p>Este obra está licenciado com uma Licença <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/3.0/pt/">Creative Commons Atribuição-NãoComercial-CompartilhaIgual 3.0 Portugal</a></p>.
+    </footer>
 
 
     <!-- Bootstrap core JavaScript

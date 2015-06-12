@@ -8,62 +8,100 @@
 
     <metal:content fill-slot="content">
 
-        <div class="row" id="analysis">
+        <div class="row">
+           <div class="col-md-12">
 
-            <div class="col-md-2">
-                <!-- Categories on the left -->
-                <div class="row" id="taxonomy">
-                    <!-- Terms grouped by taxonomy -->
-                    <div id="load-tax" class="loading"></div>
+               <div class="panel panel-default">
+                  <!-- Default panel contents -->
+                  <div class="panel-heading">Coleta de informações entre ${start_date} e ${end_date}</div>
+                  <div class="panel-body">
+                    <p style="color: #000000;">Os dados foram extraídos das redes sociais entre os dias <b>${start_date}</b> e <b>${end_date}</b></p>
+                  </div>
+              </div>
 
+           </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <h2>Coleta</h2>
+
+
+            <div class="col-md-3">
+                <div class="bs-callout bs-callout-info">
+                    <h4>Dados da Coleta</h4>
+                    <ul>
+                        <li>Data de Início: ${start_date}</li>
+                        <li>Data de Fim: ${end_date}</li>
+                        <li id="result_count">Total de Tweets coletados: Aguarde. Calculando...</li>
+                    </ul>
                 </div>
 
             </div>
 
-            <div class="col-md-8">
-                <div class="row">
-                    <!-- Map with status on the country -->
-                    <div id="load-maps" class="loading"></div>
-                    <div id="map_canvas" style="height: 500px; width: 100%;"></div>
-                </div>
-
-                <div class="row">
-                    <!-- Document list -->
-                    <table class="table-bordered" id="status-table" style="display: none;">
-                        <thead>
-                            <tr>
-                                <th style="width: 10%;">Date</th>
-                                <th style="width: 5%;">+/-</th>
-                                <th style="width: 75%;">Status</th>
-                                <th style="width: 10%;">Origin</th>
-                            </tr>
-                        </thead>
-                        <tbody id="status">
-                        </tbody>
-                    </table>
-                </div>
+            <div class="col-md-3">
+                <h4>Termos mais frequentes</h4>
+                <ul class="list-group">
+                  <li class="list-group-item" tal:repeat="elm terms['results']">
+                    <span class="badge">${elm['frequency']}</span>
+                    ${elm['token']}
+                  </li>
+                </ul>
             </div>
 
-            <div class="col-md-2">
+            <div class="col-md-3">
+                <h4>Tagclouds</h4>
                 <div class="row">
                     <!-- Tag clouds -->
-                    <h4>Tagcloud</h4>
                     <div id="load-tagcloud" class="loading"></div>
                     <div id="tagcloud"></div>
                 </div>
-
-                <div class="row">
-                    <h4>Most frequent terms</h4>
-                    <!-- Terms frequency matrix -->
-                    <ul class="list-group">
-                      <li class="list-group-item" tal:repeat="elm terms['results']">
-                        <span class="badge">${elm['frequency']}</span>
-                        ${elm['token']}
-                      </li>
-                    </ul>
-                </div>
             </div>
 
+        </div>
+
+        <div class="row">
+            <h2>Análises Gráficas</h2>
+
+            <div class="col-md-12">
+                <!-- Categories on the left -->
+                <div class="row" id="categories">
+                    <!-- Terms grouped by taxonomy -->
+                    <div id="load-cat" class="loading"></div>
+
+                </div>
+
+                <div class="row" id="states">
+                    <!-- Terms grouped by taxonomy -->
+                    <div id="load-states" class="loading"></div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+
+            <h2>Tópicos Identificados</h2>
+
+            <div class="col-md-3" tal:repeat="item topics.keys()">
+
+                <ul class="list-group">
+
+                    <li class="list-group-item" style="background-color: ${topics[item]['category']['color']}">
+                      <h4>${topics[item]['category']['category_pretty_name']}</h4>
+                        <ul class="list-group">
+                          <li tal:repeat="elm topics[item]['tokens']" class="list-group-item">
+                            <span class="badge">${elm['probability']}</span>
+                            ${elm['word']}
+                          </li>
+                        </ul>
+                    </li>
+
+                </ul>
+
+            </div>
 
         </div>
 
@@ -71,8 +109,6 @@
 
     <metal:content fill-slot="javascript">
 
-        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=${key}&sensor=true&region=BR"></script>
-        <script src="${request.static_url('lbsociamgame:static/js/lib/maps.js')}"></script>
         <script src="${request.static_url('lbsociamgame:static/js/lib/analysis.js')}"></script>
 
         <script type="text/javascript">
@@ -81,61 +117,61 @@
 
                 $(document).ready(function(){
 
+                    var period = {
+                        "start": "${start_date}",
+                        "end": "${end_date}"
+                    };
+
+                    var period2 = {
+                        "start_date": "${start_date}",
+                        "end_date": "${end_date}"
+                    };
+
+                    // Load tagclouds
+                    loadTagclouds("${request.route_url('crime_hashtags')}", period);
+
+                    // Generate graphics
                     $.ajax({
                         type: "GET",
-                        url: "${request.route_url('crime_topics')}",
-                        data: "",
-                        dataType: "json",
-                        success: function(topics){
-                            $( '#load-tax' ).hide();
-                            //var topics = data;
-
-                            // Asynchronously load the template.
-                            var html = loadTopics(topics);
-
-                            // Add HTML to taxonomy elm
-                            $( '#taxonomy' ).append(html);
-                        },
-                        error: function(){
-                            alert("Entrei no Fail dos tópicos");
-                        },
-                        load: function(){
-                            $( '#load-tax' ).show();
-                        }
-                    });
-
-                    // Load maps
-                    //initialize();
-
-
-                    // Load maps for elements with location
-                    $.ajax({
-                        type: "GET",
-                        url: "${request.route_url('crime_locations')}",
-                        data: "",
-                        dataType: "json",
+                        url: "${request.route_url('category_list')}",
+                        data: period2,
+                        dataType: "html",
                         success: function(result){
-                            $( '#load-maps' ).hide();
-                            $( '#status-table').show();
+                            $( '#load-cat' ).hide();
                             //var topics = data;
 
-                            // Asynchronously load the maps elements.
-                            var markers = statusLocations(result);
-
-                            // Load Map with all markers
-                            initialize(markers);
-
-                            // Now load tagclouds
-                            loadTagclouds("${request.route_url('crime_hashtags')}");
+                            $( '#categories' ).append(result);
 
                         },
                         error: function(){
-                            alert("Entrei no Fail dos locations");
+                            alert("Entrei no Fail dos categories");
                         },
                         load: function(){
-                            $( '#load-maps' ).show();
+                            $( '#load-cat' ).show();
                         }
                     });
+
+                    // Generate graphics
+                    $.ajax({
+                        type: "GET",
+                        url: "${request.route_url('states')}",
+                        data: period2,
+                        dataType: "html",
+                        success: function(result){
+                            $( '#load-states' ).hide();
+                            //var topics = data;
+
+                            $( '#states' ).append(result);
+
+                        },
+                        error: function(){
+                            alert("Entrei no Fail dos states");
+                        },
+                        load: function(){
+                            $( '#load-states' ).show();
+                        }
+                    });
+
 
                 });
             });

@@ -1,0 +1,48 @@
+<metal:main use-macro="load: master.pt">
+
+    <metal:content fill-slot="title">LBSociam</metal:content>
+
+    <metal:content fill-slot="breadcrumbs">
+        <li class="active"><a href="#" class="active">Home</a></li>
+        <li><a href="${request.route_url('crimes')}">Categorias</a></li>
+        <li><a href="${request.route_url('crime_analysis')}">Mapa do Brasil</a></li>
+        <li><a href="${request.route_url('status_bulk')}">Classificação</a></li>
+    </metal:content>
+
+    <metal:content fill-slot="content">
+        <div class="row">
+            <div class="jumbotron">
+                <h1>LBSociam: uma máquina social de informações criminais</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+              <h2>Categorias</h2>
+                <p>Categorias obtidas através da taxonomia reduzida proposta </p>
+                <p><a role="button" href="${request.route_url('crimes')}" class="btn btn-primary" title="Categorias">
+                    Categorias »
+                </a></p>
+            </div>
+            <div class="col-md-4">
+              <h2>Mapa do Brasil</h2>
+                <p>Mapa dos eventos relacionados à criminalidade no Estado Brasileiro obtidos através da extração dos dados oriundos de redes sociais</p>
+                <p><a role="button" href="${request.route_url('crime_analysis')}" class="btn btn-primary" title="Mapa dos crimes no Brasil">
+                    Mapa do Brasil »
+                </a></p>
+            </div>
+            <div class="col-md-4">
+              <h2>Classificação</h2>
+                <p>Classificação dos eventos identificados como verdadeiros ou falsos positivos </p>
+                <p><a role="button" href="${request.route_url('status_bulk')}" class="btn btn-primary" title="Classificação dos Status">
+                    Classificação »
+                </a></p>
+            </div>
+        </div>
+
+    </metal:content>
+
+    <metal:content fill-slot="javascript">
+    </metal:content>
+
+</metal:main>

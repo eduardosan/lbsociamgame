@@ -1,7 +1,7 @@
 #!/usr/env python
 # -*- coding: utf-8 -*-
 __author__ = 'eduardo'
-
+import datetime
 import logging
 import time
 import json
@@ -35,13 +35,30 @@ class AnalysisController(LBRequest):
         View to load crime data
         :return:
         """
+        # Get date filters
+        start_date = self.request.params.get('start')
+        end_date = self.request.params.get('end')
+
+        log.debug("Start date: %s", start_date)
+        log.debug("End date: %s", end_date)
+
+        # Get starting date
+        if start_date is None:
+            return Response("Start date mandatory", status=500)
+
+        if end_date is None:
+            end_date_obj = datetime.datetime.now()
+            end_date = end_date_obj.strftime("%Y-%m-%d")
+
         search_url = self.status_base.lbgenerator_rest_url + self.status_base.lbbase.metadata.name + '/doc'
         terms = self.dic_base.get_token_frequency(limit=20)
 
         return {
             'search_url': search_url,
             'key': self.status_base.gmaps_api_key,
-            'terms': terms
+            'terms': terms,
+            'start_date': start_date,
+            'end_date': end_date
         }
 
     def crime_topics(self):
@@ -69,8 +86,27 @@ class AnalysisController(LBRequest):
         """
         Get crimes with locations included
         """
+        # Get date filters
+        start_date = self.request.params.get('start')
+        end_date = self.request.params.get('end')
 
-        status_locations = self.status_base.get_locations()
+        # Get starting date
+        if start_date is None:
+            return Response("Start date mandatory", status=500)
+        else:
+            start_date_obj = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+
+        # Get end date
+        if end_date is None:
+            end_date_obj = datetime.datetime.now()
+            end_date = end_date_obj.strftime("%Y-%m-%d")
+        else:
+            end_date_obj = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+
+        status_locations = self.status_base.get_locations(
+            start_date=start_date_obj,
+            end_date=end_date_obj
+        )
 
         # Get training base
         training_base = self.training_base
@@ -105,6 +141,23 @@ class AnalysisController(LBRequest):
         """
         Generate hashtag clouds
         """
+        # Get date filters
+        start_date = self.request.params.get('start')
+        end_date = self.request.params.get('end')
+
+        # Get starting date
+        if start_date is None:
+            return Response("Start date mandatory", status=500)
+        else:
+            start_date_obj = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+
+        # Get end date
+        if end_date is None:
+            end_date_obj = datetime.datetime.now()
+            end_date = end_date_obj.strftime("%Y-%m-%d")
+        else:
+            end_date_obj = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+
         # Number of elements to be in hashtags by default
         n = self.request.params.get('n')
         if n is None:
@@ -113,7 +166,11 @@ class AnalysisController(LBRequest):
             n = int(n)
 
         log.debug("HASHTAGS: processing starting at %s", time.ctime())
-        status = self.status_base.get_hashtags()
+        status = self.status_base.get_hashtags(
+            start_date=start_date_obj,
+            end_date=end_date_obj
+        )
+
         hashtags = dict()
         for elm in status['results']:
             if elm is not None:
@@ -142,5 +199,47 @@ class AnalysisController(LBRequest):
         """
         Hashtags list for the period
         """
+        id_doc = self.request.matchdict.get('id_doc')
+        analytics = self.analytics_base.get_document(id_doc)
 
-        return {}
+        # Get date filters
+        start_date = datetime.datetime.strptime(analytics['analysis_date'], "%d/%m/%Y %H:%M:%S").strftime("%Y-%m-%d")
+        end_date = datetime.datetime.strptime(analytics['analysis_end_date'], "%d/%m/%Y %H:%M:%S").strftime("%Y-%m-%d")
+
+        # Get starting date
+        if start_date is None:
+            return Response("Start date mandatory", status=500)
+        else:
+            start_date_obj = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+
+        # Get end date
+        if end_date is None:
+            end_date_obj = datetime.datetime.now()
+            end_date = end_date_obj.strftime("%Y-%m-%d")
+        else:
+            end_date_obj = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+
+        # Get topics
+        n_topics = self.request.params.get('n_topics')
+        if n_topics is None:
+            # TODO: Get this value from crimes taxonomy base
+            n_topics = 4
+        else:
+            n_topics = int(n_topics)
+
+        # Here explicitly load training base
+        topics = lda.crime_topics(
+            self.training_base,
+            self.crimes_base,
+            n_topics
+        )
+
+        # Most frequent terms
+        terms = self.dic_base.get_token_frequency(limit=5)
+
+        return {
+            'start_date': start_date,
+            'end_date': end_date,
+            'topics': topics,
+            'terms': terms
+        }

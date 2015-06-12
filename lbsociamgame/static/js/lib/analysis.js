@@ -90,11 +90,11 @@ function statusLocations(result) {
  * Load tagclouds template from hashtags list
  * @param route_url URL to look for tagclouds
  */
-function loadTagclouds(route_url) {
+function loadTagclouds(route_url, period) {
     $.ajax({
         type: "GET",
         url: route_url,
-        data: "",
+        data: period,
         dataType: "html",
         success: function(result){
             $( '#load-tagcloud' ).hide();

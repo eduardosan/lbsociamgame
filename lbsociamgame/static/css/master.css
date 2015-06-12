@@ -18,3 +18,10 @@
 .form-horizontal {
     color: black;
 }
+body {
+  color: #000000;
+  background: none;
+}
+.starter-template {
+    margin: 0;
+}

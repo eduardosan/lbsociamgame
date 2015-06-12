@@ -3,10 +3,33 @@
     <metal:content fill-slot="title">Violence and criminality analysis</metal:content>
 
     <metal:content fill-slot="breadcrumbs">
-        <li class="active">Crime Analysis</li>
+        <li><a href="${request.route_url('home')}">Home</a></li>
+        <li><a href="${request.route_url('crimes')}">Categorias</a></li>
+        <li class="active"><a href="${request.route_url('crime_analysis')}">Mapa do Brasil</a></li>
+        <li><a href="${request.route_url('status_bulk')}">Classificação</a></li>
     </metal:content>
 
     <metal:content fill-slot="content">
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="panel panel-default">
+                  <!-- Default panel contents -->
+                  <div class="panel-heading">Coleta de informações entre ${start_date} e ${end_date}</div>
+                  <div class="panel-body">
+                    <p style="color: #000000;">O gráfico apresenta informações de dados extraídos nas redes sociais entre os dias <b>${start_date}</b> e <b>${end_date}</b></p>
+                    <p>O botão abaixo apresenta alguns detalhamentos e gráficos sobre os dados apresentados no mapa.</p>
+                    <form action="${request.route_url('crime_periods')}" method="GET" target="_blank">
+                        <input type="hidden" name="start" id="start_date" value="${start_date}">
+                        <input type="hidden" name="end" id="end_date" value="${end_date}">
+                        <button type="submit" class="btn btn-primary">Dados e Gráficos</button>
+                    </form>
+                  </div>
+              </div>
+
+            </div>
+        </div>
 
         <div class="row" id="analysis">
 
@@ -81,6 +104,11 @@
 
                 $(document).ready(function(){
 
+                    var period = {
+                        "start": "${start_date}",
+                        "end": "${end_date}"
+                    };
+
                     $.ajax({
                         type: "GET",
                         url: "${request.route_url('crime_topics')}",
@@ -112,7 +140,7 @@
                     $.ajax({
                         type: "GET",
                         url: "${request.route_url('crime_locations')}",
-                        data: "",
+                        data: period,
                         dataType: "json",
                         success: function(result){
                             $( '#load-maps' ).hide();
@@ -126,7 +154,7 @@
                             initialize(markers);
 
                             // Now load tagclouds
-                            loadTagclouds("${request.route_url('crime_hashtags')}");
+                            loadTagclouds("${request.route_url('crime_hashtags')}", period);
 
                         },
                         error: function(){
