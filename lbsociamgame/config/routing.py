@@ -13,6 +13,8 @@ def make_routes(cfg):
     cfg.add_static_view('static', 'static', cache_max_age=3600)
     cfg.add_route('home', '/')
 
+    cfg.add_route('about', 'about')
+
     # Crime classification routes
     cfg.add_route('crime_add', 'crime/new')
     cfg.add_view(crime.CrimeController, attr='crime_add', route_name='crime_add',

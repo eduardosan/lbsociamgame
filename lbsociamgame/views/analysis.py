@@ -284,7 +284,8 @@ class AnalysisController(LBRequest):
             'start_date': start_date,
             'end_date': end_date,
             'topics': topics,
-            'terms': terms
+            'terms': terms,
+            'total_status': analytics['total_status']
         }
 
     def create_analysis(self):

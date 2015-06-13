@@ -7,6 +7,7 @@
         <li><a href="${request.route_url('crimes')}">Categorias</a></li>
         <li class="active"><a href="${request.route_url('create_analysis')}">Análises</a></li>
         <li><a href="${request.route_url('status_bulk')}">Classificação</a></li>
+        <li><a href="${request.route_url('about')}">Sobre</a></li>
     </metal:content>
 
     <metal:content fill-slot="content">
@@ -40,7 +41,7 @@
                     <ul>
                         <li>Data de Início: ${start_date}</li>
                         <li>Data de Fim: ${end_date}</li>
-                        <li id="result_count">Total de Tweets coletados: Aguarde. Calculando...</li>
+                        <li>Total de Tweets coletados: <b>${total_status}</b></li>
                     </ul>
                 </div>
 
@@ -54,6 +55,9 @@
                     ${elm['token']}
                   </li>
                 </ul>
+                <div class="alert alert-warning" role="alert">
+                    <p>Os termos mais frequentes levam em consideração <b>todos</b> os dados já coletados.</p>
+                </div>
             </div>
 
             <div class="col-md-3">

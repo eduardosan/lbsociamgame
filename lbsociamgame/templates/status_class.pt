@@ -2,6 +2,14 @@
 
     <metal:content fill-slot="title">Status Classification</metal:content>
 
+    <metal:content fill-slot="breadcrumbs">
+        <li><a href="${request.route_url('home')}">Home</a></li>
+        <li><a href="${request.route_url('crimes')}">Categorias</a></li>
+        <li><a href="${request.route_url('create_analysis')}">Análises</a></li>
+        <li class="active"><a href="${request.route_url('status_bulk')}">Classificação</a></li>
+        <li><a href="${request.route_url('about')}">Sobre</a></li>
+    </metal:content>
+
     <metal:content fill-slot="content">
 
         <div class="row">

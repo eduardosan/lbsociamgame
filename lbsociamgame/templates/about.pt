@@ -1,0 +1,103 @@
+<metal:main use-macro="load: master.pt">
+
+    <metal:content fill-slot="title">LBSociam</metal:content>
+
+    <metal:content fill-slot="breadcrumbs">
+        <li><a href="${request.route_url('home')}">Home</a></li>
+        <li><a href="${request.route_url('crimes')}">Categorias</a></li>
+        <li><a href="${request.route_url('create_analysis')}">Análises</a></li>
+        <li><a href="${request.route_url('status_bulk')}">Classificação</a></li>
+        <li class="active"><a href="${request.route_url('about')}">Sobre</a></li>
+    </metal:content>
+
+    <metal:content fill-slot="content">
+
+                <div class="row">
+            <div class="col-md-12">
+                <div class="media">
+                  <div class="media-left">
+                    <a href="http://www.eduardosan.com" title="Acesse o site do Autor" target="_blank">
+                      <img class="media-object" src="https://pt.gravatar.com/userimage/1941840/0e4087b1a6bdafca5b6babb02cb81ef1.jpg?size=64" alt="Foto de Eduardo Santos">
+                    </a>
+                  </div>
+                  <div class="media-body">
+                    <h4 class="media-heading">Sobre o Autor</h4>
+                    <p>
+                        Mestrando em Engenharia de Software pela Universidade de Brasília (UnB),
+                        me formei em Computação pela mesma Universidade em 2011. Atuei durante mais
+                        de 5 anos no Governo Federal na área de comunidades de prática e colaboração,
+                        em projetos como COPTEC da ECT, CATIR da Embrapa e, principalmente, Portal
+                        do Software Público Brasileiro. Sempre trabalhei no desenvolvimento de
+                        tecnologias livres, tendo colaborado em vários projetos de Software Livre,
+                        como OpenACS, Cacic, Owncloud, entre outros. Atualmente, atuo como Consultor
+                        e Gerente de Desenvolvimento da empresa Lightbase, onde trabalho no
+                        desenvolvimento de bancos de dados documentais distribuídos. Desenvolvo
+                        pesquisas nas áreas de Web Semântica, Bancos de Dados, Análise de Redes
+                        Sociais e Mineração de Textos, onde atuo como cientista de dados (data scientist).
+                    </p>
+                    <p>Site do Autor: <a href="http://www.eduardosan.com" title="Acesse o site do autor" target="_blank">http://www.eduardosan.com</a> </p>
+                    <p>Curriculum Lattes: <a href="http://lattes.cnpq.br/6976112462598240" target="_blank" title="Acesso o Curriculum Lattes">http://lattes.cnpq.br/6976112462598240</a></p>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Resumo</h4>
+                <p><i>Social machine</i> é uma abordagem relativamente nova para tratar
+                    problemas relevantes à sociedade, integrando em um software elementos
+                    computacionais e sociais. Pode ser considerada uma extensão da Web
+                    Semântica, criando o processo por meio do qual as pessoas executam
+                    as tarefas criativas e as máquinas realizam a administração. Essa
+                    Dissertação de Mestrado apresenta uma proposta de aplicação do
+                    conceito a um assunto relevante nos países da América Latina e
+                    Caribe -- LAC. Trata-se de uma extensão do conceito de <i>Social Machines</i>
+                    que aplica duas estratégias publicadas recentemente para obter
+                    informações semânticas de dados oriundos de redes sociais, além de
+                    publicar o resultado como um serviço de Dados Abertos. O processo
+                    de desenvolvimento foi documentado para fornecer um procedimento
+                    sistemático, e uma aplicação exemplo foi construída para identificar
+                    eventos relacionados a violência e criminalidade. O procedimento
+                    proposto foi validado e testado em modelos formais recentemente
+                    desenvolvidos para o tema. Os resultados da extração de dados são
+                    também comparados aos dados oficiais, de forma a identificar similaridades.</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Abstract</h4>
+                <p>Social machine is a rather new approach to deal with relevant problems
+                    in society, blending computational and social elements into software.
+                    It can be an extension of the Semantic Web, creating processes in
+                    which people do the creative work and the machine does the administration.
+                    This professional masters dissertation presents a proposal to apply
+                    this approach in a relevant matter to Latin America and Caribbean -- LAC -- countries.
+                    It extends Social Machines by applying two recent published strategies
+                    to obtain semantics over social networks data and publishing it as a
+                    Linked Open Data service. The development procedure was documented to
+                    provide a systematic procedure and an example application is presented
+                    to identify violence and criminality events. The resulting procedure
+                    validation was be done by testing against recently developed formal
+                    models in the research area. Criminal activity data extraction results
+                    was also compared to official data, in order to identify similarities.</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+              <div class="bs-callout bs-callout-warning">
+                  <h4>Sobre o trabalho</h4>
+                  <p>O trabalho foi desenvolvido como parte do
+                      <a href="http://ppca.unb.br/" title="Acesse a página do Programa de Mestrado"> Mestrado Profissional em Computação Aplicada da Universidade de Brasília</a>.</p>
+              </div>
+            </div>
+        </div>
+
+    </metal:content>
+
+    <metal:content fill-slot="javascript">
+    </metal:content>
+
+</metal:main>
